@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export function HowItWorks({ type }) {
+  const navigate = useNavigate();
+
   return (
     <div className="w-screen h-auto md:h-[521px] px-4 md:px-16 py-12 md:py-28 bg-black flex-col justify-start items-start gap-10 md:gap-20 inline-flex overflow-hidden">
       <div className="self-stretch flex-col md:flex-row justify-start items-start gap-10 md:gap-20 inline-flex">
@@ -62,7 +66,16 @@ export function HowItWorks({ type }) {
           {/* Buttons */}
           <div className="justify-start items-center gap-4 md:gap-6 inline-flex">
             <button className="px-4 py-2 md:px-6 md:py-3 border border-white justify-center items-center gap-2 flex overflow-hidden cursor-pointer">
-              <div className="text-white text-sm md:text-base font-normal font-['Roboto'] leading-normal">
+              <div className="text-white text-sm md:text-base font-normal font-['Roboto'] leading-normal cursor-pointer" onClick={()=>{
+                      const token = sessionStorage.getItem('token');
+                      console.log(token);
+
+                      if (token == null) {
+                        navigate('/signup');
+                      } else {
+                        navigate('/dashboard');
+                      }
+                    }}>
                 Start Campaign
               </div>
             </button>

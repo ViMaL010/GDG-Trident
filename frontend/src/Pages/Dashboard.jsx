@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Search, Bell } from 'lucide-react';
 import { SideBarComponent } from '../Components/layoutComponents.jsx/SideBarComponent';
 import { useNavigate, useLocation } from 'react-router-dom';
+import FileUpload from '../Components/FileUploadComponent';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Add this line to properly get location
   
+
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,7 +87,7 @@ const Dashboard = () => {
 <div className="max-w-3xl bg-white p-6 shadow-md border border-gray-200 rounded-lg flex gap-6">
   {/* Campaign Image */}
   <div className="h-32 w-32 bg-gray-200 flex items-center justify-center rounded-md">
-    <span className="text-gray-400">Image</span>
+    <img src="/dev.png" alt="" />
   </div>
 
   {/* Campaign Details */}
@@ -132,7 +134,7 @@ const Dashboard = () => {
                 scholarships.map((scholarship, index) => (
                   <div key={index} className="bg-white p-4 border border-gray-200">
                     <div className="h-40 bg-gray-200 flex items-center justify-center mb-4">
-                      <span className="text-gray-400">Image</span>
+                      <img src="/teaching.png" alt="" />
                     </div>
                     <div className="flex justify-between items-center text-xs mb-1">
                       <div className="flex items-center">

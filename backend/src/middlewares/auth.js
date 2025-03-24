@@ -45,7 +45,7 @@ export const loginAuth = async (req, res) => {
         });
 
         // Generate token
-        const token = jwt.sign({ _id: user._id}, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ _id: user._id}, secretKey);
         console.log('signin Token:', token);
 
         // Send the token in Authorization header

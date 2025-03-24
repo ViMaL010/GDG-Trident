@@ -11,6 +11,7 @@ import AuthRoute from "./Auth/AuthRoute";
 import CampaignStart from "./Pages/MyCampagin";
 import MultiStepForm from "./Pages/FullDetail";
 import FormReviewComponent from "./Components/ApplicationComponent/FormReviewComponent";
+import MainCampaignPage from "./Pages/Campaign";
 function App() {
   return (
     <BrowserRouter>
@@ -82,6 +83,14 @@ function App() {
           element={
             <AuthRoute>
               <FormReviewComponent />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/campaign"
+          element={
+            <AuthRoute>
+              <MainCampaignPage />
             </AuthRoute>
           }
         />

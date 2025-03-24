@@ -1,52 +1,18 @@
 import React, { useState } from "react";
 import FormReviewComponent from "../Components/ApplicationComponent/FormReviewComponent";
+import { FileInput } from "../Components/FileInputComponent";
+import { FileUploadReview, UploadProgressDisplay, useFileUploadManager } from "../Components/FileManager";
+import FileUpload from "../Components/FileUploadComponent";
+import { uploadAllFiles } from "../Components/UploadComponent";
+import { useNavigate } from "react-router-dom";
 
 // File Input Component
-const FileInput = ({ 
-  title,
-  placeholder,
-  name, 
-  value, 
-  onChange, 
-  required = false 
-}) => {
-  const handleFileUpload = (e) => {
-    const { files } = e.target;  // Remove the name destructuring here
-    if (files && files[0]) {
-      onChange({
-        target: {
-          name: name,  // Use the name from props
-          value: files[0]
-        }
-      });
-    }
-  };
 
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium mb-2">
-        {title} {required && <span className="text-red-500">*</span>}
-      </label>
-      <div className="border border-gray-300 p-2 flex items-center">
-        <input
-          type="file"
-          name={name}
-          id={name}
-          onChange={handleFileUpload}
-          className="hidden"
-        />
-        <label
-          htmlFor={name}
-          className="cursor-pointer flex-1 "
-        >
-          {placeholder ? placeholder : "Choose one option below"}
-        </label>
-      </div>
-    </div>
-  );
-};
+
 
 const MultiStepForm = () => {
+
+  const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -82,6 +48,8 @@ const MultiStepForm = () => {
     mediaContent : null
   });
 
+  const [uploadResults, setUploadResults] = useState(null);
+
   const [fundraiserInfo , setFundraiserInfo] = useState({
     fundraiserTitle : '',
     fundraiserReason : '',
@@ -103,7 +71,39 @@ const MultiStepForm = () => {
     upiId : '',
   }) 
   
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState(null);
+  const [submissionComplete, setSubmissionComplete] = useState(false);
+  const [fileUrls, setFileUrls] = useState({});
 
+  const navigateToCampaign = () => {
+    setTimeout(() => {
+      navigate('/campaign');
+    }, 1000); // Optional delay before navigation
+  };
+
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    const fileMap = {};
+    Array.from(files).forEach((file, index) => {
+      fileMap[`file_${index + 1}`] = file;
+    });
+    setUploadedFiles(fileMap);
+  };
+
+  // Upload Handler
+  const handleUpload = () => {
+    uploadAllFiles(uploadedFiles, (result) => {
+      if (result.success) {
+        console.log("All files uploaded successfully:", result.successResults);
+        
+      } else {
+        console.error("Some files failed to upload:", result.failedResults);
+      }
+    });
+  };
+
+  
   // Handle personal info input changes
   const handleBankDetailsChange = (e) => {
     const { name, value } = e.target;
@@ -145,15 +145,37 @@ const MultiStepForm = () => {
       [name]: value
     }));
   };
+  
 
   // Handle file uploads
-  const handleFileUpload = (e) => {
-    const { name, value } = e.target;
-    setUploadedFiles(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+  const handleFileUpload = (e) => {     
+    const { name, value } = e.target;     
+    setUploadedFiles(prevState => ({       
+      ...prevState,       
+      [name]: value     
+    }));   
+  };    // Navigate to next step   
+  // const handleNext = () => {     setCurrentStep(prevStep => prevStep + 1);   };    // Navigate to previous step   const handleBack = () => {     setCurrentStep(prevStep => prevStep - 1);   };
+  const handleUploadComplete = (result) => {
+    console.log("Result of FileUpload component is:" , result)
+    if (result.success) {
+      const uploadedFileUrls = result.successResults.reduce((acc, fileResult) => {
+        if (fileResult.name && fileResult.url) {
+          acc[fileResult.name] = fileResult.url;
+        }
+        return acc;
+      }, {});
+  
+      setFileUrls(uploadedFileUrls);
+      console.log('File URLs after upload:', uploadedFileUrls);
+    } else {
+      setSubmissionError('Some files failed to upload. Please check and try again.');
+      console.log('Error submitting form');
+    }
   };
+  
+  
+ 
 
   // Navigate to next step
   const handleNext = () => {
@@ -165,13 +187,263 @@ const MultiStepForm = () => {
     setCurrentStep(prevStep => prevStep - 1);
   };
 
+
+  function CheckboxForm() {
+    const [formState, setFormState] = useState({
+      allDetailsCorrect: false,
+      agreeToTerms: true
+    });
+  
+    const handleCheckboxChange = (event) => {
+      const { name, checked } = event.target;
+      setFormState({
+        ...formState,
+        [name]: checked
+      });
+    };
+  
+    // Custom checkbox styles
+    const checkboxContainerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '15px',
+      position: 'relative',
+      cursor: 'pointer'
+    };
+  
+    const checkboxLabelStyle = {
+      marginLeft: '10px',
+      fontFamily: 'Arial, sans-serif'
+    };
+  
+    const checkboxStyle = {
+      appearance: 'none',
+      width: '20px',
+      height: '20px',
+      border: '1px solid #ccc',
+      borderRadius: '3px',
+      outline: 'none',
+      cursor: 'pointer',
+      position: 'relative'
+    };
+  
+    const checkboxCheckedStyle = {
+      backgroundColor: '#000',
+      borderColor: '#000'
+    };
+  
+    const checkmarkStyle = {
+      position: 'absolute',
+      top: '2px',
+      left: '6px',
+      width: '8px',
+      height: '14px',
+      border: 'solid white',
+      borderWidth: '0 2px 2px 0',
+      transform: 'rotate(45deg)',
+      display: 'none'
+    };
+  
+    return (
+      <div className="checkbox-form" style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
+        <div style={checkboxContainerStyle}>
+          <div style={{ position: 'relative' }}>
+            <input
+              type="checkbox"
+              id="allDetailsCorrect"
+              name="allDetailsCorrect"
+              checked={formState.allDetailsCorrect}
+              onChange={handleCheckboxChange}
+              style={{
+                ...checkboxStyle,
+                ...(formState.allDetailsCorrect ? checkboxCheckedStyle : {})
+              }}
+            />
+            <div
+              style={{
+                ...checkmarkStyle,
+                display: formState.allDetailsCorrect ? 'block' : 'none'
+              }}
+            />
+          </div>
+          <label htmlFor="allDetailsCorrect" style={checkboxLabelStyle}>
+            All details are correct.
+          </label>
+        </div>
+        
+        <div style={checkboxContainerStyle}>
+          <div style={{ position: 'relative' }}>
+            <input
+              type="checkbox"
+              id="agreeToTerms"
+              name="agreeToTerms"
+              checked={formState.agreeToTerms}
+              onChange={handleCheckboxChange}
+              style={{
+                ...checkboxStyle,
+                ...(formState.agreeToTerms ? checkboxCheckedStyle : {})
+              }}
+            />
+            <div
+              style={{
+                ...checkmarkStyle,
+                display: formState.agreeToTerms ? 'block' : 'none'
+              }}
+            />
+          </div>
+          <label htmlFor="agreeToTerms" style={checkboxLabelStyle}>
+            I agree to the terms & conditions.
+          </label>
+        </div>
+      </div>
+    );
+  }
+
   // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Make sure it's at the start
-    formData = personalInfo;
-    // ✅ This should log the object
-    console.log('Form submitted:', { personalInfo, academicInfo, fundraiserInfo, bankDetails, uploadedFiles });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionError(null);
+
+    const formData = {
+      personalInfo,
+      academicInfo,
+      financialInfo,
+      fundraiserInfo,
+      bankDetails,
+      uploadedFiles
+    }
+    console.log(formData)
+  
+    try {
+      setSubmissionComplete(false);
+      // ✅ Upload all files to Firebase
+      // const fileUrls = handleUpload(uploadedFiles);
+  
+      // // ✅ Check if any required files are missing
+      // const missingFiles = Object.keys(uploadedFiles).filter(
+      //   (key) => uploadedFiles[key] && !(fileUrls?.[key])
+      // );
+  
+      // if (missingFiles.length > 0) {
+      //   console.log(
+      //     `The following files are missing: ${missingFiles
+      //       .map((file) => file.replace(/([A-Z])/g, ' $1').trim())
+      //       .join(', ')}. Please upload them before submitting.`
+      //   );
+      // }
+  
+      // ✅ Prepare form data
+      const formData = {
+        personalInfo,
+        academicInfo,
+        financialInfo,
+        fundraiserInfo,
+        bankDetails,
+      };
+  
+      console.log('Submitting form data:', formData);
+      // console.log('File URLs:', fileUrls);
+  
+      // ✅ Submit form data to the backend API
+      
+      const response = await fetch('http://localhost:5000/api/updateCampaign/uploadUserDetails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization" : sessionStorage.getItem('token')
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        console.log('Failed to submit form');
+      }
+  
+      const result = await response.json();
+      console.log('Submission successful:', result);
+      
+
+      // ✅ Submission successful
+      setSubmissionComplete(true);
+      if(setSubmissionComplete){
+        navigate('/campaign')
+      }
+
+    } catch (error) {
+      console.error('Form submission failed:', error);
+      setSubmissionError(error.message || 'An error occurred during submission');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+  
+    const renderFinalStep = () => (
+      <div>
+        <h2 className="text-2xl font-bold text-center mb-2">Review & Submit</h2>
+        <p className="text-center text-gray-600 mb-6">Check your details before submitting.</p>
+        
+        {/* Personal info review */}
+        <FormReviewComponent formData={personalInfo} sections={personalSections} />
+        
+        {/* Academic info review */}
+        <FormReviewComponent formData={academicInfo} sections={academicSection} />
+        
+        {/* Financial info review */}
+        <FormReviewComponent formData={financialInfo} sections={financialSection} />
+        
+        {/* Fundraiser info review */}
+        <FormReviewComponent formData={fundraiserInfo} sections={fundraiserSection} />
+        
+        {/* Bank details review */}
+        <FormReviewComponent formData={bankDetails} sections={bankDetailsSection} />
+        
+        {/* File upload review */}
+        {/* <FileUploadReview files={uploadedFiles} /> */}
+        
+        {/* Upload progress (only shown when uploading) */}
+        {/* <UploadProgressDisplay progress={uploadProgress} uploading={uploading} /> */}
+        
+        {/* Error message */}
+        {/* {(uploadError || submissionError) && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
+            {uploadError || submissionError}
+          </div>
+        )} */}
+        
+        {/* Success message */}
+        {submissionComplete && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-700">
+            Your application has been submitted successfully!
+          </div>
+        )}
+        
+        {/* Checkbox agreement */}
+        <CheckboxForm />
+        
+        {/* Action buttons */}
+        <div className="flex justify-end mt-8 space-x-4">
+          <button
+            type="button"
+            className="px-4 py-2 border border-gray-300"
+            onClick={handleBack}
+            disabled={isSubmitting || ""}
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className={`px-6 py-2 text-white ${(isSubmitting || "") ? 'bg-gray-500' : 'bg-black'}`}
+            disabled={isSubmitting || ""}
+          >
+            {isSubmitting || "" ? 'Processing...' : 'Submit'}
+          </button>
+        </div>
+      </div>
+    );
+
+
+ 
 
   const personalSections = [
     {
@@ -200,9 +472,6 @@ const MultiStepForm = () => {
   ]
 
   const financialSection = [
-    // annualIncome : '',
-    // guardianName : '',
-    // guardianContact : ''
     {
       title : 'Financial & Identity Verification',
       fields: [
@@ -213,7 +482,31 @@ const MultiStepForm = () => {
       ]
     }
   ]
+
+  const fundraiserSection = [
+    {
+      title : 'Fundraiser Details',
+      fields : [
+        {label : 'Fundraiser Title', key : 'fundraiserTitle'},
+        {label : 'Why Do You Need Funds?', key : 'fundraiserReason'},
+        {label : 'Fundraiser Goal (Amount in ₹)', key : 'fundraiserGoal'},
+        {label : 'How Will The Funds Be Used', key : 'fundraiserUsage'},
+      ]
+    }
+  ]
   
+  const bankDetailsSection = [
+    {
+      title : 'Bank Account Details',
+      fields : [
+        {label : 'Account Holder Name' , key: 'accountHolderName'},
+        {label : 'Bank Name' , key : 'bankName'},
+        {label : 'Account Number' , key : 'accountNumber'},
+        {label : 'IFSC Code' , key : 'ifscCode'},
+        {label : 'UPI ID (Optional)', key : 'upiId'}
+      ]
+    }
+  ]
 
 
   return (
@@ -248,7 +541,7 @@ const MultiStepForm = () => {
                 value={personalInfo.fullName}
                 onChange={handlePersonalInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -262,7 +555,7 @@ const MultiStepForm = () => {
                   value={personalInfo.dateOfBirth}
                   onChange={handlePersonalInfoChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
                 <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -279,7 +572,7 @@ const MultiStepForm = () => {
                 value={personalInfo.gender}
                 onChange={handlePersonalInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none appearance-none"
-                required = {false}
+                required = {true}
               >
                 <option value="">Select one...</option>
                 <option value="male">Male</option>
@@ -301,7 +594,7 @@ const MultiStepForm = () => {
                   value={personalInfo.mobileNumber}
                   onChange={handlePersonalInfoChange}
                   className="w-full p-2 pl-8 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
                 <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -323,7 +616,7 @@ const MultiStepForm = () => {
                   value={personalInfo.email}
                   onChange={handlePersonalInfoChange}
                   className="w-full p-2 pl-8 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
                 <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -362,7 +655,7 @@ const MultiStepForm = () => {
                 value={academicInfo.highestQualification}
                 onChange={handleAcademicInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none appearance-none"
-                required = {false}
+                required = {true}
               >
                 <option value="">Select one...</option>
                 <option value="high-school">High School</option>
@@ -378,7 +671,7 @@ const MultiStepForm = () => {
               name="aadharCard"
               value={uploadedFiles.aadharCard}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
             
             <FileInput
@@ -386,7 +679,7 @@ const MultiStepForm = () => {
               name="marksheet10th"
               value={uploadedFiles.marksheet10th}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
             
             <FileInput
@@ -394,7 +687,7 @@ const MultiStepForm = () => {
               name="marksheet12th"
               value={uploadedFiles.marksheet12th}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
             
             <FileInput
@@ -402,7 +695,7 @@ const MultiStepForm = () => {
               name="bonafide"
               value={uploadedFiles.bonafide}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
             <div className="mb-4">
@@ -416,7 +709,7 @@ const MultiStepForm = () => {
                 value={academicInfo.currentCourse}
                 onChange={handleAcademicInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -431,7 +724,7 @@ const MultiStepForm = () => {
                 value={academicInfo.collegeName}
                 onChange={handleAcademicInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -446,7 +739,7 @@ const MultiStepForm = () => {
                 value={academicInfo.universityName}
                 onChange={handleAcademicInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -455,24 +748,25 @@ const MultiStepForm = () => {
               name="collegeId"
               value={uploadedFiles.collegeId}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
-            <div className="flex justify-between mt-8">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="px-6 py-2 bg-gray-200 text-black"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-black text-white"
-              >
-                Next
-              </button>
-            </div>
+            <div className="flex justify-end mt-8 space-x-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300"
+                  onClick={handleBack}
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  // onClick={handleSubmit}
+                  className="px-6 py-2 bg-black text-white"
+                >
+                  Next
+                </button>
+              </div>
           </form>
         </>
       )}
@@ -494,9 +788,9 @@ const MultiStepForm = () => {
                 name="annualIncome"
                 placeholder="Enter your total family income per year..."
                 value={financialInfo.annualIncome}
-                onChange={setFinancialInfo}
+                onChange={financialInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -505,7 +799,7 @@ const MultiStepForm = () => {
               name="incomeCertificate"
               value={uploadedFiles.incomeCertificate}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
             <FileInput               
@@ -513,7 +807,7 @@ const MultiStepForm = () => {
               name="communityCertificate"
               value={uploadedFiles.communityCertificate}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
             <div className="mb-6">
@@ -525,9 +819,9 @@ const MultiStepForm = () => {
                 name="guardianName"
                 placeholder="Enter your parent or guardian's name"
                 value={financialInfo.guardianName}
-                onChange={setFinancialInfo}
+                onChange={financialInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
@@ -540,27 +834,28 @@ const MultiStepForm = () => {
                 name="guardianContact"
                 placeholder="Enter your parent or guardian's name"
                 value={financialInfo.guardianContact}
-                onChange={setFinancialInfo}
+                onChange={financialInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
-                required = {false}
+                required = {true}
               />
             </div>
 
-            <div className="flex justify-between mt-8">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="px-6 py-2 bg-gray-200 text-black"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-black text-white"
-              >
-                Next
-              </button>
-            </div>
+            <div className="flex justify-end mt-8 space-x-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300"
+                  onClick={handleBack}
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  // onClick={handleSubmit}
+                  className="px-6 py-2 bg-black text-white"
+                >
+                  Next
+                </button>
+              </div>
           </form>
         </>
       )}
@@ -577,7 +872,7 @@ const MultiStepForm = () => {
               name="admissionLetter"
               value={uploadedFiles.admissionLetter}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
             <FileInput               
@@ -585,7 +880,7 @@ const MultiStepForm = () => {
               name="feeStructure"
               value={uploadedFiles.feeStructure}
               onChange={handleFileUpload}
-              required = {false}
+              required = {true}
             />
 
             <div className="mb-6">
@@ -597,26 +892,27 @@ const MultiStepForm = () => {
                 name="guardianName"
                 placeholder="Enter your parent or guardian's name"
                 value={financialInfo.guardianName}
-                onChange={setFinancialInfo}
+                // onChange={financialInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
               />
             </div>
             
-            <div className="flex justify-between mt-8">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="px-6 py-2 bg-gray-200 text-black"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-black text-white"
-              >
-                Next
-              </button>
-            </div>
+            <div className="flex justify-end mt-8 space-x-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300"
+                  onClick={handleBack}
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  // onClick={handleSubmit}
+                  className="px-6 py-2 bg-black text-white"
+                >
+                  Next
+                </button>
+              </div>
           </form>
         </>
       )}
@@ -641,7 +937,7 @@ const MultiStepForm = () => {
           value={fundraiserInfo.fundraiserTitle || ''}
           onChange={handleFundraiserInfoChange}
           className="w-full p-2 border border-gray-300 focus:outline-none"
-          required = {false}
+          required = {true}
         />
         <p className="text-xs text-gray-500 mt-1">
           Note: This title will be used everywhere in your campaign, including your fundraiser page, donor communications, and promotional materials.
@@ -658,7 +954,7 @@ const MultiStepForm = () => {
           value={fundraiserInfo.fundraiserReason || ''}
           onChange={handleFundraiserInfoChange}
           className="w-full p-2 border border-gray-300 focus:outline-none h-24"
-          required = {false}
+          required = {true}
         />
       </div>
 
@@ -673,7 +969,7 @@ const MultiStepForm = () => {
           value={fundraiserInfo.fundraisingGoal}
           onChange={handleFundraiserInfoChange}
           className="w-full p-2 border border-gray-300 focus:outline-none"
-          required = {false}
+          required = {true}
         />
       </div>
 
@@ -700,7 +996,7 @@ const MultiStepForm = () => {
           value={fundraiserInfo.fundsUsage || ''}
           onChange={handleFundraiserInfoChange}
           className="w-full p-2 border border-gray-300 focus:outline-none"
-          required = {false}
+          required = {true}
         />
       </div>
 
@@ -711,25 +1007,26 @@ const MultiStepForm = () => {
           name="mediaContent"
           value={uploadedFiles.mediaContent}
           onChange={handleFileUpload}
-          required = {false}
+          required = {true}
         />
       </div>
 
-      <div className="flex justify-between mt-8">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="px-6 py-2 bg-gray-200 text-black"
-        >
-          Back
-        </button>
-        <button
-          type="submit"
-          className="px-6 py-2 bg-black text-white"
-        >
-          Next
-        </button>
-      </div>
+      <div className="flex justify-end mt-8 space-x-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300"
+                  onClick={handleBack}
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  // onClick={handleSubmit}
+                  className="px-6 py-2 bg-black text-white"
+                >
+                  Next
+                </button>
+              </div>
     </form>
   </>
       )}
@@ -752,7 +1049,7 @@ const MultiStepForm = () => {
                   value={bankDetails.accountHolderName}
                   onChange={handleBankDetailsChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
               </div>
         
@@ -765,7 +1062,7 @@ const MultiStepForm = () => {
                   value={bankDetails.bankName}
                   onChange={handleBankDetailsChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none appearance-none"
-                  required = {false}
+                  required = {true}
                 >
                   <option value="">Mention the name of your bank...</option>
                   <option value="SBI">State Bank of India</option>
@@ -786,7 +1083,7 @@ const MultiStepForm = () => {
                   value={bankDetails.accountNumber}
                   onChange={handleBankDetailsChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
               </div>
         
@@ -801,7 +1098,7 @@ const MultiStepForm = () => {
                   value={bankDetails.ifscCode}
                   onChange={handleBankDetailsChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
-                  required = {false}
+                  required = {true}
                 />
               </div>
         
@@ -865,38 +1162,9 @@ const MultiStepForm = () => {
           </>
       )}
 
-      {currentStep == 7 && (
-        
-        <div>
-                <h2 className="text-2xl font-bold text-center mb-2">Review & Submit</h2>
-      <p className="text-center text-gray-600 mb-6">Check your details before submitting.</p>
-      
-          
-          {console.log(personalInfo)}
-          {console.log('Form submitted:', { personalInfo, academicInfo, fundraiserInfo, bankDetails, uploadedFiles })}
-          <FormReviewComponent formData={personalInfo} sections={personalSections} />
-          <FormReviewComponent formData={academicInfo} sections={academicSection} />
-          <FormReviewComponent formData={financialInfo} sections={financialSection} />
-          <div className="flex justify-end mt-8 space-x-4">
-                <button
-                  type="button"
-                  className="px-4 py-2 border border-gray-300"
-                  onClick={handleBack}
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  // onClick={handleSubmit}
-                  className="px-6 py-2 bg-black text-white"
-                >
-                  Submit
-                </button>
-              </div>
-        </div>
-        
-      )}
-
+      <form onSubmit={handleSubmit} >
+      {currentStep == 7 && renderFinalStep()}
+      </form>
       
     </div>
   );

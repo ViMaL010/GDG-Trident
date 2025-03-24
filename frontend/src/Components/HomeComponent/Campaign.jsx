@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export function Campaign() {
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="h-auto md:h-[804px] flex justify-start items-start">
@@ -14,10 +18,28 @@ export function Campaign() {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row justify-start items-start gap-4">
-                <button className="w-full md:w-auto px-6 py-3 bg-black border border-black text-white text-base font-normal font-['Roboto'] leading-normal">
+                <button className="w-full md:w-auto px-6 py-3 bg-black border border-black text-white text-base font-normal font-['Roboto'] leading-normal cursor-pointer" onClick={()=>{
+                      const token = sessionStorage.getItem('token');
+                      console.log(token);
+
+                      if (token == null) {
+                        navigate('/signup');
+                      } else {
+                        navigate('/dashboard');
+                      }
+                    }}>
                   Start Your Campaign
                 </button>
-                <button className="w-full md:w-auto px-6 py-3 border border-black text-black text-base font-normal font-['Roboto'] leading-normal">
+                <button className="w-full md:w-auto px-6 py-3 border border-black text-black text-base font-normal font-['Roboto'] leading-normal cursor-pointer" onClick={()=>{
+                      const token = sessionStorage.getItem('token');
+                      console.log(token);
+
+                      if (token == null) {
+                        navigate('/signup');
+                      } else {
+                        navigate('/dashboard');
+                      }
+                    }}>
                   Support a Student
                 </button>
               </div>

@@ -1,3 +1,4 @@
+import FileUpload from "../Components/FileUploadComponent"
 import { Campaign } from "../Components/HomeComponent/Campaign"
 import { Cta } from "../Components/HomeComponent/Cta"
 import { Faq } from "../Components/HomeComponent/Faq"

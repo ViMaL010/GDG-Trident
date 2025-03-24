@@ -4,6 +4,7 @@ import scholarshipRoutes from "./routes/scholarshipRoutes.js";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import signRoutes from "./routes/signRoutes.js";
+import UserDetailRouter from "./routes/detailRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -14,5 +15,6 @@ app.use(express.json());
 
 app.use("/api/scholarships", scholarshipRoutes);
 app.use("/api/sign", signRoutes);
+app.use("/api/updateCampaign", UserDetailRouter);
 
 export default app;

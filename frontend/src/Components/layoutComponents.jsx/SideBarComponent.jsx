@@ -131,13 +131,11 @@ export const SideBarComponent = () => {
           <div className="absolute bottom-0 left-0 w-56 border-t border-gray-200">
             <div onClick={() => {
               sessionStorage.removeItem("token");
+              sessionStorage.removeItem("email");
               navigate("/");
             }} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
               Log Out
             </div>
-            <a href="#" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded">
-              Settings
-            </a>
           </div>
         </nav>
       </div>
