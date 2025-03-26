@@ -8,17 +8,17 @@ import { Navbar } from "../Components/HomeComponent/Navbar"
 import { WhyChooseUs } from "../Components/HomeComponent/WhyChooseUs"
 
 
-export function Home(){
-    return <div>
-    <Navbar/>
-    <Campaign/>
-    <HowItWorks type="black"/>
-    {/* <HowItWorks type ="white"/> */}
-    <WhyChooseUs/>
-    <Cta/>
-    <Faq/>
-    <Footer/>
-
-    </div>
-
-}
+export function Home() {
+    return (
+      <div className="overflow-x-hidden"> {/* Add this wrapper to prevent overflow */}
+        <Navbar />
+        <Campaign />
+        <HowItWorks type="black" />
+        {/* <HowItWorks type ="white"/> */}
+        <WhyChooseUs />
+        <Cta />
+        <Faq />
+        <Footer />
+      </div>
+    )
+  }

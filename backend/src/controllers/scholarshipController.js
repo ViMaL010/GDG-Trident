@@ -23,8 +23,8 @@ export const storeMatchedScholarships = async (req, res) => {
       return (
         (scholarship.criteria.tenthMarks <= studentData.tenthMarks || scholarship.criteria.tenthMarks === 0) &&
         (scholarship.criteria.twelfthMarks <= studentData.twelfthMarks || scholarship.criteria.twelfthMarks === 0) &&
-        (scholarship.criteria.CGPA <= studentData.CGPA || scholarship.criteria.CGPA === 0) &&
-        (scholarship.criteria.AIScore <= studentData.AIScore || scholarship.criteria.AIScore === 0)
+        (scholarship.criteria.CGPA <= studentData.CGPA || scholarship.criteria.CGPA === 0)
+        // (scholarship.criteria.AIScore <= studentData.AIScore || scholarship.criteria.AIScore === 0)
       );
     });
     

@@ -8,7 +8,7 @@ export function Footer(){
      <img src="/Logo.png" alt="" />
       </div>
     </div>
-    <div data-layer="Links" className="Links w-screen inline-flex justify-center items-start gap-8">
+    <div data-layer="Links" className="Links w-full inline-flex justify-center items-start gap-8">
       <div data-layer="Link One" className="LinkOne relative justify-start text-white text-sm font-semibold font-['Roboto'] leading-[21px]">Home</div>
       <div data-layer="Link Two" className="LinkTwo relative justify-start text-white text-sm font-semibold font-['Roboto'] leading-[21px]">About Us</div>
       <div data-layer="Link Three" className="LinkThree relative justify-start text-white text-sm font-semibold font-['Roboto'] leading-[21px]">Browse Students</div>

@@ -2,9 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const ApplicationFormComponent = () => {
+    const [aiScore, setAiScore] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState(null);
+
     const navigate = useNavigate();
-    
+
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -14,25 +20,72 @@ export const ApplicationFormComponent = () => {
         tenthMarks: '',
         twelfthMarks: '',
         AIScore: '',
-        requiredFunds: ''
+        requiredFunds: '',
+        github_username: "",
+        leetcode: "",
+        repo1: "",
+        repo2: "",
+        annualIncome: ""
     });
-    
-    // Loading and submission status
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState(null);
 
+    const fetchAiScore = async () => {
+        setLoading(true);
+        setError('');
+        setSuccessMessage('');
+        setAiScore(null);
     
+        try {
+          // First validate all fields
+        //   const isValid = await validateAll();
+          
+        //   if (!isValid) {
+        //     throw new Error('Please correct the validation errors before calculating the score');
+        //   }
     
+          // If validation passes, calculate score
+          const response = await fetch('http://localhost:5000/api/Ai/calculate-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: formData.github_username,
+              leetcode: formData.leetcode,
+              repo1: formData.repo1,
+              repo2: formData.repo2,
+              income: formData.annualIncome
+            })
+          });
+    
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.error || `Server error: ${response.status}`);
+          }
+    
+          if (!data.success || typeof data.ai_score !== 'number' || isNaN(data.ai_score)) {
+            throw new Error('Invalid AI score received from server');
+          }
+    
+          setAiScore(data.ai_score.toFixed(2)); // Round to 2 decimal places
+          setSuccessMessage('Score calculated successfully!')
+          console.log(aiScore);
+          console.log(successMessage)
+        } catch (err) {
+          setError(err.message || 'Network error, please try again');
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setFormData(prevData => ({
+            ...prevData,
             [name]: value
-        });
+        }));
     };
-    
-    
-    // Handle form submission
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -46,15 +99,15 @@ export const ApplicationFormComponent = () => {
                     "Authorization" : sessionStorage.getItem('token')
                 },
                 body: JSON.stringify(formData),
-            })
+            });
 
-            sessionStorage.setItem("email" , formData.email)
+            sessionStorage.setItem("email", formData.email);
 
             if (!studentDetail.ok) {
                 throw new Error(`API responded with status: ${studentDetail.status}`);
             }
 
-            console.log("student detail" , studentDetail)
+            fetchAiScore();
 
             const response = await fetch('http://localhost:5000/api/scholarships/match', {
                 method: 'POST',
@@ -65,19 +118,15 @@ export const ApplicationFormComponent = () => {
                 body: JSON.stringify(formData)
             });
 
-            console.log("Response" , response)
-            
-
             if (!response.ok) {
                 throw new Error(`API responded with status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             setSubmitStatus({ success: true, message: 'Application submitted successfully!' });
             setLoading(true);
             setTimeout(() => {
                 navigate('/submission');
-                console.log('Submission successful:', data);
             }, 1500);
         } catch (error) {
             setSubmitStatus({ success: false, message: `No eligible scholarships found` });
@@ -87,7 +136,6 @@ export const ApplicationFormComponent = () => {
         }
     };
 
-    // Render loading spinner if needed
     const renderLoader = () => {
         if (!loading) return null;
         
@@ -113,8 +161,7 @@ export const ApplicationFormComponent = () => {
             
             <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-                    
-                    {/* Illustration - Hidden on small screens, visible on medium+ */}
+                    {/* Illustration section */}
                     <div className="hidden md:flex items-center justify-center md:w-2/5 lg:w-1/2">
                         <img 
                             src="https://media.istockphoto.com/id/2027690301/vector/backend-development-coding-and-programming-it-specialist-sit-and-write-code-on-a-laptop-for.jpg?s=612x612&w=0&k=20&c=XFAq03A3tCnwvoKzT4mS3oBxlCiKJg1C5JaJVRmbH6I="
@@ -125,6 +172,7 @@ export const ApplicationFormComponent = () => {
                     
                     {/* Form fields */}
                     <div className="space-y-4 sm:space-y-6 w-full md:w-3/5 lg:w-1/2">
+                        {/* Personal Information */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:-mt-24">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">First name *</label>
@@ -150,6 +198,7 @@ export const ApplicationFormComponent = () => {
                             </div>
                         </div>
                         
+                        {/* Contact and Funds */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Email address *</label>
@@ -186,6 +235,7 @@ export const ApplicationFormComponent = () => {
                             </div>
                         </div>
                         
+                        {/* Scholarship Category */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Scholarship Category *</label>
                             <select 
@@ -199,6 +249,7 @@ export const ApplicationFormComponent = () => {
                             </select>
                         </div>
                         
+                        {/* Academic Performance */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Current CGPA *</label>
@@ -230,6 +281,7 @@ export const ApplicationFormComponent = () => {
                             </div>
                         </div>
                         
+                        {/* Additional Academic Details */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">12th Marks (%) *</label>
@@ -246,31 +298,93 @@ export const ApplicationFormComponent = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">AI Score *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Annual family income *</label>
                                 <input 
                                     type="number" 
-                                    name="AIScore"
-                                    value={formData.AIScore}
+                                    name="annualIncome"
+                                    value={formData.annualIncome}
                                     onChange={handleInputChange}
                                     step="0.01"
                                     min="0"
-                                    max="100"
+                                    max="500000"
                                     required
                                     className="w-full p-2 border rounded" 
                                 />
                             </div>
                         </div>
+
+                        {/* Skill-Based Fields (Conditionally Rendered) */}
+                        {formData.category === 'Skill-Based' && (
+                            <>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Github Username *</label>
+                                        <div className="flex items-center border rounded">
+                                            <input 
+                                                type="text" 
+                                                name="github_username"
+                                                value={formData.github_username}
+                                                onChange={handleInputChange}
+                                                placeholder="VimaL010" 
+                                                required
+                                                className="w-full p-2 focus:outline-none ml-1" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Leetcode Username *</label>
+                                        <input 
+                                            type="text" 
+                                            name="leetcode"
+                                            value={formData.leetcode}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full p-2 border rounded" 
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Project 1 Link *</label>
+                                        <div className="flex items-center border rounded">
+                                            <input 
+                                                type="text" 
+                                                name="repo1"
+                                                value={formData.repo1}
+                                                onChange={handleInputChange}
+                                                placeholder="https://github.com/ViMaL010/Medium.git" 
+                                                required
+                                                className="w-full p-2 focus:outline-none ml-1" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Project 2 Link *</label>
+                                        <input 
+                                            type="text" 
+                                            name="repo2"
+                                            value={formData.repo2}
+                                            onChange={handleInputChange}
+                                            placeholder="https://github.com/ViMaL010/Solutions.git"
+                                            required
+                                            className="w-full p-2 border rounded ml-1" 
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         
-                        {/* Display submission status */}
+                        {/* Submission Status and Loader */}
                         {submitStatus && !submitStatus.success && (
                             <div className="bg-red-100 text-red-800 p-4 rounded text-sm">
                                 {submitStatus.message}
                             </div>
                         )}
                         
-                        {/* Loader */}
                         {renderLoader()}
                         
+                        {/* Submit Buttons */}
                         <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4">
                             <button 
                                 type="button" 
@@ -292,4 +406,4 @@ export const ApplicationFormComponent = () => {
             </form>
         </div>
     );
-}
+};

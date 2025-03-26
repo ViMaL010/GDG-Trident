@@ -6,7 +6,7 @@ const studentSchema = new mongoose.Schema({
     email: { type: String, required: true },
     category: { type: String, required: true },
     CGPA: { type: Number, required: true },
-    AIScore: { type: Number, required: true },
+    AIScore: { type: Number, required: false },
     requiredFunds: { type: Number, required: true },
     tenthMarks: { type: Number, required: true },
     twelfthMarks: { type: Number, required: true }

@@ -7,7 +7,6 @@ const scholarshipSchema = new mongoose.Schema({
   min10thMarks: Number,
   min12thMarks: Number,
   minCGPA: Number,
-  minAIScore: Number,
   amount: Number,
 });
 

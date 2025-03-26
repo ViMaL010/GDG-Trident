@@ -1,50 +1,161 @@
-import React, { useEffect, useState } from 'react';
-import { Search, Bell } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Search, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SideBarComponent } from '../Components/layoutComponents.jsx/SideBarComponent';
 import { useNavigate, useLocation } from 'react-router-dom';
-import FileUpload from '../Components/FileUploadComponent';
+
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Loading placeholder component
+const LoadingPlaceholder = ({ message = "Loading..." }) => (
+  <div className="bg-white p-6 shadow-sm border border-gray-200 rounded-lg text-center">
+    <p className="text-gray-600">{message}</p>
+  </div>
+);
+
+// Reusable scholarship card component with hover effects
+const ScholarshipCard = ({ scholarship }) => (
+  <div className="bg-white p-4 border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300 hover:translate-y-[-4px] cursor-pointer rounded-md">
+    <div className="h-40 bg-gray-200 flex items-center justify-center mb-4 overflow-hidden rounded">
+      <img src="/teaching.png" alt="Scholarship" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+    </div>
+    <div className="flex justify-between items-center text-xs mb-1">
+      <div className="flex items-center">
+        <span className="mr-1">📅</span>
+        <span>ENDS 11/15/2024</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <span className="text-[13px] font-semibold">Amount Payable </span>
+        <span className="mr-1">₹</span>
+        <span className="-ml-1">{scholarship.amount}</span>
+      </div>
+    </div>
+    <h3 className="font-bold text-sm mb-1">{scholarship.name}</h3>
+    <p className="text-xs text-gray-500 mb-3">{scholarship.scholarshipDetail || 'No description available'}</p>
+    <div className="flex items-center text-xs font-medium group">
+      <span className="group-hover:text-blue-600 transition-colors">View Details</span>
+      <span className="ml-1 group-hover:ml-2 transition-all duration-300 group-hover:text-blue-600">→</span>
+    </div>
+  </div>
+);
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Add this line to properly get location
+  const location = useLocation();
   
-
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [scholarshipsPerPage] = useState(6); // Number of scholarships per page
 
-  const fetchScholarships = async () => {
+  // Memoize fetchScholarships with useCallback to prevent unnecessary re-renders
+  const fetchScholarships = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/scholarships/getAllScholarships', {
+      setError(null);
+      
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        // Redirect to login if no token found
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/scholarships/getAllScholarships`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          "Authorization" : sessionStorage.getItem('token')
+          'Authorization': token
         },
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setScholarships(data.scholarships);
+        setScholarships(data.scholarships || []);
+        setCurrentPage(1); // Reset to first page when new data is fetched
       } else {
-        alert(data.message || 'Failed to fetch scholarships. Please try again.');
+        setError(data.message || 'Failed to fetch scholarships');
       }
-    } catch(e) {
-      console.error('Error fetching scholarships:', e);
-      alert('An error occurred. Please try again later.');
+    } catch (err) {
+      console.error('Error fetching scholarships:', err);
+      setError('An error occurred while fetching scholarships');
     } finally {
       setLoading(false);
     }
-  };
-
-  // console.log(scholarships)
+  }, [navigate]);
 
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       fetchScholarships();
     }
-  }, [location.pathname]); // Added location.pathname as a dependency
+  }, [location.pathname, fetchScholarships]);
+
+  // Filter scholarships based on search query
+  const filteredScholarships = scholarships.filter(scholarship => 
+    scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (scholarship.scholarshipDetail && scholarship.scholarshipDetail.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Pagination calculations
+  const indexOfLastScholarship = currentPage * scholarshipsPerPage;
+  const indexOfFirstScholarship = indexOfLastScholarship - scholarshipsPerPage;
+  const currentScholarships = filteredScholarships.slice(
+    indexOfFirstScholarship, 
+    indexOfLastScholarship
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredScholarships.length / scholarshipsPerPage);
+
+  // Render pagination controls
+  const renderPagination = () => {
+    if (filteredScholarships.length <= scholarshipsPerPage) return null;
+
+    return (
+      <div className="flex justify-center items-center mt-6 space-x-2">
+        <button 
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => paginate(index + 1)}
+            className={`
+              px-4 py-2 rounded-md text-sm transition-all
+              ${currentPage === index + 1 
+                ? 'bg-black text-white' 
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'}
+            `}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button 
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+    );
+  };
+
+  // Get the active campaign (first scholarship or null)
+  const activeCampaign = scholarships.length > 0 ? scholarships[0] : null;
 
   return (
     <div className="flex h-screen w-full bg-gray-50">
@@ -59,165 +170,143 @@ const Dashboard = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search"
-                className="pl-8 pr-4 py-1 border border-gray-200 text-sm w-64"
+                placeholder="Search scholarships"
+                className="pl-8 pr-4 py-1 border border-gray-200 rounded text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1); // Reset to first page on new search
+                }}
               />
               <Search className="absolute left-2 top-1.5 h-4 w-4 text-gray-400" />
             </div>
-            <Bell className="h-5 w-5 text-gray-500" />
+            <Bell className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-800 transition-colors duration-300 hover:scale-110" />
           </div>
         </div>
         
-    <div className="p-6">
-      {/* Campaign Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-1">My Campaign</h1>
-        <p className="text-sm text-gray-500 mb-4">
-          Track and manage your crowdfunding campaign effectively
-        </p>
+        <div className="p-6">
+          {/* Campaign Header */}
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold mb-1">My Campaign</h1>
+            <p className="text-sm text-gray-500 mb-4">
+              Track and manage your crowdfunding campaign effectively
+            </p>
 
-        {/* Active Campaign */}
-        
-        {loading ? (
-          <div className="bg-white p-6 shadow-sm border border-gray-200 rounded-lg text-center">
-            <p className="text-gray-600">Loading campaign data...</p>
+            {/* Active Campaign */}
+            {loading ? (
+              <LoadingPlaceholder message="Loading campaign data..." />
+            ) : error ? (
+              <div className="bg-red-50 text-red-700 p-6 shadow-sm border border-red-200 rounded-lg hover:shadow-md transition-shadow">
+                <p>Error: {error}</p>
+                <button 
+                  onClick={fetchScholarships}
+                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 hover:shadow transition-all duration-300 text-sm"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : activeCampaign ? (
+              <div className="max-w-3xl bg-white p-6 shadow-md border border-gray-200 rounded-lg flex gap-6 hover:shadow-lg transition-shadow duration-300">
+                {/* Campaign Image */}
+                <div className="h-32 w-32 bg-gray-200 flex items-center justify-center rounded-md overflow-hidden">
+                  <img src="/dev.png" alt="Campaign" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+                </div>
+
+                {/* Campaign Details */}
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-green-500 bg-green-50 px-2 py-1 rounded">ACTIVE</span>
+                  <h2 className="text-lg font-bold mt-1">{activeCampaign.name}</h2>
+
+                  {/* Funding Details */}
+                  <div className="flex items-center mt-2 text-sm">
+                    <span className="text-gray-500">Goal: $10,000</span>
+                    <span className="mx-2 text-gray-300">|</span>
+                    <span className="text-green-600">$3,464 (34%)</span>
+                  </div>
+
+                  {/* Progress bar with hover effect */}
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden group">
+                    <div className="bg-green-600 h-2 rounded-full transition-all duration-700 group-hover:bg-green-500" style={{ width: '34%' }}></div>
+                  </div>
+
+                  {/* Campaign Description */}
+                  <p className="text-sm text-gray-500 mt-3 max-w-lg">
+                    Alex is struggling to pay tuition needed to finish their degree in computer science.
+                    Your contribution can make a difference for their future. Help them reach their goal!
+                  </p>
+
+                  {/* Manage Button with hover effect */}
+                  <button className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-all duration-300 hover:shadow-md transform hover:-translate-y-1">
+                    Manage Campaign
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white p-6 shadow-sm border border-gray-200 rounded-lg text-center hover:shadow-md transition-shadow duration-300">
+                <p className="text-gray-600">No active campaigns found.</p>
+                <button 
+                  className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-all duration-300 hover:shadow hover:scale-105"
+                  onClick={() => navigate('/create-campaign')} // Make sure you have this route
+                >
+                  Create Campaign
+                </button>
+              </div>
+            )}
           </div>
-        ) : scholarships.length > 0 ? (
-          
-<div className="max-w-3xl bg-white p-6 shadow-md border border-gray-200 rounded-lg flex gap-6">
-  {/* Campaign Image */}
-  <div className="h-32 w-32 bg-gray-200 flex items-center justify-center rounded-md">
-    <img src="/dev.png" alt="" />
-  </div>
 
-  {/* Campaign Details */}
-  <div className="flex-1">
-    <span className="text-xs font-medium text-gray-500">ACTIVE</span>
-    <h2 className="text-lg font-bold mt-1">{scholarships[0].name}</h2>
-
-    {/* Funding Details */}
-    <div className="flex items-center mt-2 text-sm">
-      <span className="text-gray-500">Goal: $10,000</span>
-      <span className="mx-2 text-gray-300">|</span>
-      <span className="text-green-600">$3,464 (34%)</span>
-    </div>
-
-    {/* Campaign Description */}
-    <p className="text-sm text-gray-500 mt-3 max-w-lg">
-      Alex is struggling to pay tuition needed to finish their degree in computer science.
-      Your contribution can make a difference for their future. Help them reach their goal!
-    </p>
-
-    {/* Manage Button */}
-    <button className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition">
-      Manage Campaign
-    </button>
-  </div>
-</div>
-) : (
-          <div className="bg-white p-6 shadow-sm border border-gray-200 rounded-lg text-center">
-            <p className="text-gray-600">No active campaigns found.</p>
-          </div>
-        )}
-      </div>
-
-          
           {/* Featured Scholarships */}
           <div className="mb-8">
-            <h2 className="text-lg font-bold mb-4">Featured Scholarships</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {loading ? (
-                <div className="bg-white p-4 border border-gray-200">
-                  <p>Loading scholarships...</p>
-                </div>
-              ) : scholarships.length > 0 ? (
-                scholarships.map((scholarship, index) => (
-                  <div key={index} className="bg-white p-4 border border-gray-200">
-                    <div className="h-40 bg-gray-200 flex items-center justify-center mb-4">
-                      <img src="/teaching.png" alt="" />
-                    </div>
-                    <div className="flex justify-between items-center text-xs mb-1">
-                      <div className="flex items-center">
-                        <span className="mr-1">📅</span>
-                        <span>ENDS 11/15/2024</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className='text-[13px] font-semibold'>Amount Payable </span>
-                        <span className="mr-1">₹</span>
-                        <span className='-ml-1'>{scholarship.amount}</span>
-                      </div>
-                    </div>
-                    <h3 className="font-bold text-sm mb-1">{scholarship.name}</h3>
-                    <p className="text-xs text-gray-500 mb-3">{scholarship.scholarshipDetail || 'No description available'}</p>
-                    <div className="flex items-center text-xs font-medium">
-                      <span>View Details</span>
-                      <span className="ml-1">→</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="bg-white p-4 border border-gray-200">
-                  <p>No scholarships available.</p>
-                </div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold">Featured Scholarships</h2>
+              {filteredScholarships.length > 0 && (
+                <span className="text-sm text-gray-500">
+                  Showing {indexOfFirstScholarship + 1}-{Math.min(indexOfLastScholarship, filteredScholarships.length)} of {filteredScholarships.length} scholarships
+                </span>
               )}
             </div>
-          </div>
-          
-          {/* Funds Overview */}
-          <div className="mb-8">
-            <h2 className="text-lg font-bold mb-1">Funds Overview</h2>
-            <p className="text-sm text-gray-500 mb-4">Track and manage your fundraising effectively</p>
-            
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2">
-                <div className="bg-white p-4 border border-gray-200">
-                  <div className="flex mb-4">
-                    <div className="text-sm text-gray-500 mr-4">All Time</div>
-                    <div className="text-sm font-medium">Last Month</div>
-                  </div>
-                  
-                  <div className="flex space-x-6 mb-6">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold">45</div>
-                      <div className="text-xs text-gray-500">Donors</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold">12</div>
-                      <div className="text-xs text-gray-500">New</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold">44</div>
-                      <div className="text-xs text-gray-500">%</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold">29</div>
-                      <div className="text-xs text-gray-500">Days</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <button className="px-4 py-2 border border-gray-300 text-sm">
-                      View All Donors
-                    </button>
-                    <button className="px-4 py-2 bg-black text-white text-sm">
-                      Download Report
-                    </button>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="text-xs text-gray-500">
-                      All data is calculated based on the latest figures. For more detailed reports, please contact support.
-                    </div>
-                  </div>
-                </div>
+
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[1, 2, 3].map(i => (
+                  <LoadingPlaceholder key={i} message="Loading scholarships..." />
+                ))}
               </div>
-              
-              <div>
-                <div className="bg-white h-full border border-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400">Chart</span>
-                </div>
+            ) : error ? (
+              <div className="bg-red-50 text-red-700 p-6 shadow-sm border border-red-200 rounded-lg hover:shadow-md transition-shadow">
+                <p>Error: {error}</p>
+                <button 
+                  onClick={fetchScholarships}
+                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 hover:shadow transition-all duration-300 text-sm"
+                >
+                  Retry
+                </button>
               </div>
-            </div>
+            ) : filteredScholarships.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {currentScholarships.map((scholarship, index) => (
+                    <ScholarshipCard key={scholarship.id || index} scholarship={scholarship} />
+                  ))}
+                </div>
+                
+                {/* Pagination Controls */}
+                {renderPagination()}
+              </>
+            ) : (
+              <div className="bg-white p-6 shadow-sm border border-gray-200 rounded-lg text-center hover:shadow-md transition-shadow duration-300">
+                <p className="text-gray-600">
+                  {searchQuery ? 'No scholarships match your search.' : 'No scholarships available.'}
+                </p>
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="mt-2 px-4 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors duration-300 text-sm"
+                  >
+                    Clear Search
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

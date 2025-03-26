@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom"
+import { SideBarComponent } from "../Components/layoutComponents.jsx/SideBarComponent";
 
 export const SuccessSubmission = () => {   
 
   const navigate = useNavigate();
-    return <div>
-            <div className="flex items-center justify-center min-h-screen bg-white">
+    return <div className="flex">
+      <SideBarComponent/>
+            <div className="flex w-full items-center justify-center min-h-screen bg-white">
       <div className="max-w-md w-full px-6 py-12 text-center">
-        <h1 className="text-3xl font-bold mb-4">Scholarship applied Successfully</h1>
+        <h1 className="text-3xl font-bold mb-4">Your AI Score is: 87/100</h1>
         
         <p className="text-gray-700 mb-8">
           Your application has been submitted. Track your status and updates in the Applied Scholarships section.
@@ -18,7 +20,7 @@ export const SuccessSubmission = () => {
             navigate('/scholarships')
           }}
         >
-         Apply scholarships
+         Apply For Scholarships
         </button>
       </div>
     </div>
