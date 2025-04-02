@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Search, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SideBarComponent } from '../Components/layoutComponents.jsx/SideBarComponent';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Chatbot from '../Components/Chatbot';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://gdg-backend-7gpy.onrender.com/api';
 
 // Loading placeholder component
 const LoadingPlaceholder = ({ message = "Loading..." }) => (
@@ -14,7 +15,7 @@ const LoadingPlaceholder = ({ message = "Loading..." }) => (
 
 // Reusable scholarship card component with hover effects
 const ScholarshipCard = ({ scholarship }) => (
-  <div className="bg-white p-4 border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300 hover:translate-y-[-4px] cursor-pointer rounded-md">
+  <div className="bg-white p-4 border border-gray-200 transition-all duration-300 hover:shadow-lg hover:border-gray-300 hover:translate-y-[-4px] cursor-pointer rounded-md" >
     <div className="h-40 bg-gray-200 flex items-center justify-center mb-4 overflow-hidden rounded">
       <img src="/teaching.png" alt="Scholarship" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
     </div>
@@ -46,6 +47,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeCampaign , setActiveCampaign ] = useState('');
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,6 +73,22 @@ const Dashboard = () => {
           'Authorization': token
         },
       });
+
+      const activeCampaignDetail = await fetch(`${API_BASE_URL}/updateCampaign/getUserDetails`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body : {
+          email : JSON.parse(localStorage.getItem('email'))
+        }
+      })
+
+      const userResponse = await activeCampaignDetail.json();
+
+      console.log(userResponse)
+      // setActiveCampaign(userResponse);
 
       const data = await response.json();
 
@@ -155,11 +173,14 @@ const Dashboard = () => {
   };
 
   // Get the active campaign (first scholarship or null)
-  const activeCampaign = scholarships.length > 0 ? scholarships[0] : null;
+  // const activeCampaign = scholarships.length > 0 ? scholarships[1] : null;
 
   return (
     <div className="flex h-screen w-full bg-gray-50">
-      <SideBarComponent/>
+      <div>
+
+        <SideBarComponent/>
+      </div>
       
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">

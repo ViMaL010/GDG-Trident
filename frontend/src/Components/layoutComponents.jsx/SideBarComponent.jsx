@@ -319,7 +319,7 @@ export const SideBarComponent = () => {
     <>
       {/* Mobile Menu Toggle Button - only shown on mobile */}
       {isMobile && (
-        <div className="fixed top-4 left-4 z-40">
+        <div className="fixed top-4 left-4 z-40 -mt-1">
           <button
             onClick={toggleMobileMenu}
             className="bg-white p-2 rounded-md shadow-md"

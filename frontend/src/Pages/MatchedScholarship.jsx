@@ -95,7 +95,7 @@ const ScholarshipFinder = () => {
               <div className="mb-8">
                 <h2 className="text-xl font-bold mb-4">Best Matched Scholarship</h2>
                 <div
-                  className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition w-1/3"
+                  className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer w-full shadow-sm hover:shadow-lg transition w-1/3"
                   onClick={() =>
                     navigate(`/fullscholarship/${mainScholarship._id}`)
                   }

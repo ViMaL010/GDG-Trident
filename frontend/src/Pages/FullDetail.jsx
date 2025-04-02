@@ -551,17 +551,18 @@ const MultiStepForm = () => {
                 <input
                   type="text"
                   name="dateOfBirth"
-                  placeholder="dd/mm/yy"
+                  placeholder="dd/mm/yyyy"
                   value={personalInfo.dateOfBirth}
                   onChange={handlePersonalInfoChange}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
                   required = {true}
                 />
-                <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+                {/* <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                </div>
+                  
+                </div> */}
               </div>
             </div>
 

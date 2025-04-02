@@ -1,16 +1,28 @@
 import React from 'react';
 import { ApplicationFormComponent } from '../ApplicationComponent/ApplicationFormComponent';
 
-const LayoutComponent = ({ apiEndpoint }) => {
+const LayoutComponent = ({ apiEndpoint, isMobile, toggleMobileMenu }) => {
   return (
     <div className="flex-1 overflow-auto">
       {/* Header */}
       <header className="bg-white shadow-sm p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
-        <h2 className="text-lg sm:text-xl font-medium">Apply for Scholarship</h2>
+        <div className="flex items-center">
+          {isMobile && (
+            <button
+              onClick={toggleMobileMenu}
+              className="mr-2 bg-white p-1.5 rounded-md shadow-sm hover:shadow-md transition-shadow"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          )}
+          <h2 className="text-lg sm:text-xl font-medium">Apply for Scholarship</h2>
+        </div>
         
         <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
           {/* Search input - Responsive width */}
-          <div className="relative flex-grow sm:flex-grow-0">
+          {/* <div className="relative flex-grow sm:flex-grow-0">
             <input
               type="text"
               placeholder="Search"
@@ -21,7 +33,7 @@ const LayoutComponent = ({ apiEndpoint }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </div>
+          </div> */}
           
           {/* Notification button */}
           <button className="p-1.5 sm:p-2 rounded-full hover:bg-gray-100">
