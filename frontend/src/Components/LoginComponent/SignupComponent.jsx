@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FundEdAnimation from '../AnimatedLoader';
 
 const SignupForm = () => {  
   const [username, setUsername] = useState('');
@@ -91,7 +92,7 @@ const SignupForm = () => {
       <main className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 md:p-8">
         <div className="w-full max-w-md px-3 sm:px-4 md:px-0">
           {loading ? (
-            <Loader />
+            <FundEdAnimation />
           ) : (
             <>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">

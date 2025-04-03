@@ -42,6 +42,26 @@ const ScholarshipCard = ({ scholarship }) => (
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+    const sidebarVariants = {
+    hidden: { x: -240 },
+    visible: { 
+      x: 0,
+      transition: { 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30 
+      }
+    },
+    exit: { 
+      x: -240,
+      transition: { 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30 
+      }
+    }
+  };
   
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +86,20 @@ const Dashboard = () => {
         return;
       }
 
+      const email = (sessionStorage.getItem('email'))
+      const activeCampaignDetail = await fetch(`${API_BASE_URL}/updateCampaign/getUserDetails`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body : JSON.stringify({ email })
+      })
+
+      const userResponse = await activeCampaignDetail.json();
+
+      console.log(userResponse)
+
       const response = await fetch(`${API_BASE_URL}/scholarships/getAllScholarships`, {
         method: 'POST',
         headers: {
@@ -73,21 +107,6 @@ const Dashboard = () => {
           'Authorization': token
         },
       });
-
-      const activeCampaignDetail = await fetch(`${API_BASE_URL}/updateCampaign/getUserDetails`,{
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body : {
-          email : JSON.parse(localStorage.getItem('email'))
-        }
-      })
-
-      const userResponse = await activeCampaignDetail.json();
-
-      console.log(userResponse)
       // setActiveCampaign(userResponse);
 
       const data = await response.json();
@@ -267,7 +286,7 @@ const Dashboard = () => {
                 <p className="text-gray-600">No active campaigns found.</p>
                 <button 
                   className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-all duration-300 hover:shadow hover:scale-105"
-                  onClick={() => navigate('/create-campaign')} // Make sure you have this route
+                  onClick={() => navigate('/myCampaign')} // Make sure you have this route
                 >
                   Create Campaign
                 </button>

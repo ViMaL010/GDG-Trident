@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
+import FundEdAnimation from '../AnimatedLoader';
 
 const LoginComponent = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const LoginComponent = () => {
 
   function Loader() {
     return (
-      <div role="status" className="flex justify-center mt-4">
+      <div role="status" className="flex justify-center items-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px]">
         <svg
           aria-hidden="true"
           className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -39,7 +40,7 @@ const LoginComponent = () => {
     setLoading(true); // Show loader
 
     try {
-      const response = await fetch('http://localhost:5000/api/sign/login', {
+      const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/sign/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,11 +54,11 @@ const LoginComponent = () => {
       if (response.ok) {
         setTimeout(() => {
           sessionStorage.setItem("token", data.token)
-          sessionStorage.setItem("email" , username)
+          sessionStorage.setItem("email", username)
           console.log('Redirecting to dashboard');
           setLoading(false);
           navigate('/dashboard');
-        }, 1000); // Show loader for 5 seconds
+        }, 1000); // Show loader for 1 second
       } else {
         setLoading(false);
         alert(data.msg || 'Login failed. Please try again.');
@@ -85,73 +86,95 @@ const LoginComponent = () => {
   return (
     <GoogleOAuthProvider clientId="121285127858-v6b1n7qbl5lcs94045s8v5f3l36j5bqi.apps.googleusercontent.com">
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full p-4 flex justify-between items-center border-b">
-          <div className="text-xl font-bold italic">
-            <img src="/Logo.png" className='h-6 cursor-pointer' alt="" onClick={()=>{
-            navigate('/')
-          }}/>
+        {/* Responsive Header */}
+        <header className="w-full p-3 sm:p-4 md:px-8 flex justify-between items-center border-b">
+          <div>
+            <img 
+              src="/Logo.png" 
+              className="h-5 sm:h-6 cursor-pointer" 
+              alt="Logo" 
+              onClick={() => navigate('/')}
+            />
           </div>
-          <div className="text-sm flex gap-1">
-            New here? <div className="text-blue-600 hover:underline cursor-pointer" onClick={()=>{
-              navigate('/signup');
-            }}>Sign Up</div>
+          <div className="text-xs sm:text-sm flex gap-1 items-center">
+            <span className="hidden xs:inline">New here?</span>
+            <span className="xs:hidden">New?</span>
+            <div 
+              onClick={() => navigate('/signup')} 
+              className="text-blue-600 hover:underline cursor-pointer ml-1"
+            >
+              Sign Up
+            </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center p-6">
-          <div className="w-full max-w-md">
-            <h1 className="text-3xl font-bold text-center mb-2">Welcome Back! Log in to Your Account</h1>
-            <p className="text-center text-gray-600 mb-8">
-              Access your dashboard, track progress, and manage your account seamlessly.
-            </p>
-
+        {/* Responsive Main Content */}
+        <main className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 md:p-6">
+          <div className="w-full max-w-md px-3 sm:px-4 md:px-0">
             {loading ? (
-              <Loader />
+              <FundEdAnimation />
             ) : (
-              <form className="space-y-4" onSubmit={fetchLogin}>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full border border-gray-300 p-2 rounded"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
+              <>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">
+                  Welcome Back! Log in to Your Account
+                </h1>
+                <p className="text-center text-gray-600 mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base">
+                  Access your dashboard, track progress, and manage your account seamlessly.
+                </p>
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password*</label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="w-full border border-gray-300 p-2 rounded"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
+                <form className="space-y-4" onSubmit={fetchLogin}>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email*
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
-                >
-                  Log in
-                </button>
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                      Password*
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
 
-                {/* <div className="w-full flex justify-center">
-                  <GoogleLogin
-                    onSuccess={responseGoogle}
-                    onError={handleFailure}
-                    className="w-full flex items-center justify-center border border-gray-300 py-2 px-4 rounded hover:bg-gray-50"
-                  />
-                </div> */}
+                  <button
+                    type="submit"
+                    className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors duration-300 mt-2"
+                  >
+                    Log in
+                  </button>
 
-                <div className="text-center">
-                  <a href="#" className="text-sm text-gray-600 hover:underline">Forgot your password?</a>
-                </div>
-              </form>
+                  {/* Uncomment if you want to add Google Login back
+                  <div className="w-full flex justify-center">
+                    <GoogleLogin
+                      onSuccess={responseGoogle}
+                      onError={handleFailure}
+                      className="w-full flex items-center justify-center border border-gray-300 py-2 px-4 rounded hover:bg-gray-50"
+                    />
+                  </div>
+                  */}
+
+                  <div className="text-center">
+                    <a href="#" className="text-xs sm:text-sm text-gray-600 hover:underline">
+                      Forgot your password?
+                    </a>
+                  </div>
+                </form>
+              </>
             )}
           </div>
         </main>

@@ -12,6 +12,7 @@ import CampaignStart from "./Pages/MyCampagin";
 import MultiStepForm from "./Pages/FullDetail";
 import FormReviewComponent from "./Components/ApplicationComponent/FormReviewComponent";
 import MainCampaignPage from "./Pages/Campaign";
+import NotFoundPage from "./Components/pageNotFound";
 function App() {
   return (
     <BrowserRouter>
@@ -94,6 +95,7 @@ function App() {
             </AuthRoute>
           }
         />
+        <Route path="/page-not-found" element={<NotFoundPage/>} />
       </Routes>
     </BrowserRouter>
   );

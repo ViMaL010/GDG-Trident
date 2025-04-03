@@ -347,7 +347,7 @@ const MultiStepForm = () => {
   
       // ✅ Submit form data to the backend API
       
-      const response = await fetch('http://localhost:5000/api/updateCampaign/uploadUserDetails', {
+      const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/updateCampaign/uploadUserDetails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -10,7 +10,7 @@ const TechInnovatorsScholarship = () => {
   const fetchSingleScholarship = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/scholarships/getSingleScholarship/${id}`,
+        `https://gdg-backend-7gpy.onrender.com/api/scholarships/getSingleScholarship/${id}`,
         {
           method: "GET",
           headers: {

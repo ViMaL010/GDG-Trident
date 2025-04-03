@@ -3,9 +3,9 @@ import { ChevronUp } from 'lucide-react';
 
 export function FAQAccordion () {
   const [openQuestions, setOpenQuestions] = useState({
-    'what': true,
-    'who': true,
-    'how': true
+    'what': false,
+    'who': false,
+    'how': false
   });
 
   const toggleQuestion = (id) => {
