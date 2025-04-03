@@ -1,98 +1,36 @@
 # 🎓 Student Crowdfunding & Scholarship Platform
 
-Empowering students with financial support through AI-driven crowdfunding and scholarship matching while ensuring a seamless donor experience.
-
 ![Platform Banner](./images/platform-banner.png)
 
 ## 📌 Table of Contents
-- [🚀 Features Overview](#-features-overview)
-- [👨‍🎓 Student Workflow](#-student-workflow)
-- [💰 Donor Workflow](#-donor-workflow)
-- [🔒 Security & Compliance](#-security--compliance)
-- [🏗️ Technical Architecture](#-technical-architecture)
+- [📖 Introduction](#-introduction)
+- [🚀 Features](#-features)
 - [📊 Screenshots](#-screenshots)
-- [🌍 Future Evolution](#-future-evolution)
 - [📂 Installation & Setup](#-installation--setup)
-- [👥 Team Members](#-team-members)
+- [👥 Contributors](#-contributors)
+- [🏗️ Technical Architecture](#-technical-architecture)
+- [🔒 Security & Compliance](#-security--compliance)
+- [🌍 Future Evolution](#-future-evolution)
 - [🔗 Useful Links](#-useful-links)
 - [📜 License](#-license)
 
-## 🚀 Features Overview
+## 📖 Introduction
 
-An AI-powered platform connecting students with financial resources through crowdfunding campaigns and personalized scholarship matching.
+The Student Crowdfunding & Scholarship Platform is an AI-powered solution designed to bridge the financial gap for students pursuing education. Our platform empowers students to create personalized fundraising campaigns while connecting donors with impactful giving opportunities. The system leverages artificial intelligence to match students with appropriate scholarships and verify documents, ensuring a secure and efficient experience for all users.
 
-## 👨‍🎓 Student Workflow
+## 🚀 Features
 
-### A. Registration & Profile Creation
-- **Authentication Options**: Google, GitHub, Email/Password, DigiLocker (for Indian students)
-- **Profile Verification**:
-  - AI-powered document authentication via Google Vision OCR
-  - Institutional database cross-referencing
-- **Skill Profile Development**:
-  - Auto-import from GitHub, LeetCode, and academic records
-  - AI-generated skill scoring for scholarship recommendations
+### For Students
+- **Smart Profile Creation**: Create verified profiles with AI-powered document authentication
+- **Personalized Campaigns**: Build customized crowdfunding campaigns with optimization tools
+- **Scholarship Matching**: Get matched with relevant scholarships based on your skills and needs
+- **Secure Fund Reception**: Receive funds through verified channels with transparent tracking
 
-### B. Crowdfunding Campaign Creation
-- **Campaign Wizard**: Easily set goals, upload documents, and create campaign narratives
-- **Optimization Tools**:
-  - Razorpay-generated QR codes & virtual accounts for fundraising
-  - Social media sharing tools & an analytics dashboard
-
-### C. Scholarship Application
-- **Types of Scholarships**: Merit-based, Skill-based, Need-based
-- **Automated Submission & Verification**:
-  - AI-driven document review & skill assessment
-  - Personalized scholarship recommendations & tracking
-
-### D. Fund Reception
-- **Verification Checkpoint**: Multi-layer fraud detection & compliance checks
-- **Fund Disbursement**: Secure transfer with real-time notifications and tax documentation
-
-## 💰 Donor Workflow
-
-### A. Registration & Profile Setup
-- **Donor Types**: Individual, Corporate, CSR Contributors
-- **Customization**: Preferences for impact areas, funding settings, and notifications
-
-### B. Donation Process
-- **Campaign Discovery**: AI-powered recommendations and advanced filtering
-- **Payment Methods**: UPI, Cards, Net Banking (via Razorpay)
-- **Transaction Features**: Secure payments, digital receipts, and tax automation
-
-### C. Corporate Scholarship Sponsorship
-- **Custom Scholarship Framework**: Design scholarship criteria and budget allocation
-- **Candidate Matching**: AI-driven shortlisting & evaluation
-- **Scholarship Management**: Track fund usage and monitor recipient performance
-
-### D. Impact Tracking & Engagement
-- **Donor Dashboard**: Visual insights on donation impact and student success
-- **Engagement Tools**: Mentorship opportunities, communication channels, and periodic impact reports
-
-## 🔒 Security & Compliance
-
-- **Encryption & Access Control**: End-to-end encryption with role-based access control
-- **Secure API Architecture**: API rate limiting and protection against abuse
-- **Regular Audits**: Security audits and penetration testing to ensure data integrity
-- **Regulatory Compliance**: Adherence to financial regulations and data protection laws
-
-## 🏗️ Technical Architecture
-
-### Infrastructure Components
-- **Frontend**: React with Vite for optimized performance
-- **Backend**: Node.js with Express.js RESTful API
-- **Database**: Firebase Firestore for scalable document storage, complemented by MongoDB
-- **Authentication**: Multi-provider authentication using Firebase Auth & JWT
-- **File Storage**: Firebase Storage for document and media uploads
-- **AI Processing**: Google Cloud AI for skill assessments and fraud detection
-- **Payments**: Razorpay API for secure and efficient transactions
-
-![Technical Architecture Diagram](./images/technical-architecture.png)
-
-### Security Implementation
-- **Data Protection**: End-to-end encryption for sensitive data
-- **Access Control**: Role-based access throughout the application
-- **Threat Mitigation**: API rate limiting and fraud detection mechanisms
-- **Compliance Standards**: Adheres to financial and data protection laws
+### For Donors
+- **Targeted Impact**: Find and support campaigns aligned with your values and interests
+- **Multiple Contribution Options**: Donate to individual students or sponsor scholarships
+- **Secure Transactions**: Make payments through multiple secure channels via Razorpay
+- **Impact Tracking**: Monitor how your contributions are making a difference
 
 ## 📊 Screenshots
 
@@ -107,12 +45,6 @@ An AI-powered platform connecting students with financial resources through crow
 
 ### Scholarship Matching
 ![Scholarship Matching](./images/scholarship-matching.png)
-
-## 🌍 Future Evolution
-
-- **Global Expansion**: Scaling the platform for international students
-- **Blockchain Integration**: Transparency in fund disbursement and verification
-- **Comprehensive Education Ecosystem**: Integration with mentorship and job placement services
 
 ## 📂 Installation & Setup
 
@@ -131,7 +63,7 @@ cd your-repo
 # Backend Setup
 cd backend
 npm install
-npm start  # or: node server.js
+npm start
 
 # Frontend Setup
 cd ../frontend
@@ -162,13 +94,39 @@ MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 ```
 
-## 👥 Team Members
+## 👥 Contributors
 
 | Name | Role | Contribution |
 |------|------|-------------|
 | Your Name | Backend Developer | Implemented AI-driven fraud detection |
 | Team Member 2 | Frontend Developer | Designed the user interface |
 | Team Member 3 | AI Engineer | Built predictive scholarship matching model |
+
+## 🏗 Technical Architecture
+
+### Infrastructure Components
+- **Frontend**: React with Vite for optimized performance
+- **Backend**: Node.js with Express.js RESTful API
+- **Database**: Firebase Firestore for scalable document storage, complemented by MongoDB
+- **Authentication**: Multi-provider authentication using Firebase Auth & JWT
+- **File Storage**: Firebase Storage for document and media uploads
+- **AI Processing**: Google Cloud AI for skill assessments and fraud detection
+- **Payments**: Razorpay API for secure and efficient transactions
+
+![Technical Architecture Diagram](./images/technical-architecture.png)
+
+## 🔒 Security & Compliance
+
+- **Encryption & Access Control**: End-to-end encryption with role-based access control
+- **Secure API Architecture**: API rate limiting and protection against abuse
+- **Regular Audits**: Security audits and penetration testing to ensure data integrity
+- **Regulatory Compliance**: Adherence to financial regulations and data protection laws
+
+## 🌍 Future Evolution
+
+- **Global Expansion**: Scaling the platform for international students
+- **Blockchain Integration**: Transparency in fund disbursement and verification
+- **Comprehensive Education Ecosystem**: Integration with mentorship and job placement services
 
 ## 🔗 Useful Links
 
