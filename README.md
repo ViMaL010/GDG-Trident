@@ -98,9 +98,9 @@ JWT_SECRET=your_jwt_secret
 
 | Name | Role | Contribution |
 |------|------|-------------|
-| Your Name | Backend Developer | Implemented AI-driven fraud detection |
-| Team Member 2 | Frontend Developer | Designed the user interface |
-| Team Member 3 | AI Engineer | Built predictive scholarship matching model |
+| Vimalesh D | Full Stack Developer |  Coded and integrated the entire project |
+| Rakshith Rao SV | UI/UX Designer | Designed the user interface |
+| Sheik Mohammed Ali M | Python Developer | Developed a profile analysis script and an AI-powered chatbot.|
 
 ## 🏗 Technical Architecture
 
@@ -108,9 +108,9 @@ JWT_SECRET=your_jwt_secret
 - **Frontend**: React with Vite for optimized performance
 - **Backend**: Node.js with Express.js RESTful API
 - **Database**: Firebase Firestore for scalable document storage, complemented by MongoDB
-- **Authentication**: Multi-provider authentication using Firebase Auth & JWT
+- **Authentication**: Using JWT
 - **File Storage**: Firebase Storage for document and media uploads
-- **AI Processing**: Google Cloud AI for skill assessments and fraud detection
+- **AI Processing**: Google Vision for OCR, Gemini Chatbot for interactions, and Google Cloud AI for skill assessments and fraud detection.
 - **Payments**: Razorpay API for secure and efficient transactions
 
 ![Technical Architecture Diagram](./images/technical-architecture.png)
