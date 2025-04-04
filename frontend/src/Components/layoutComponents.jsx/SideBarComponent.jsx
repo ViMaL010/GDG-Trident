@@ -243,6 +243,33 @@ export const SideBarComponent = () => {
                           )}
                         </div>
                       </li>
+                      <li>
+                        <div
+                          className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={()=>{
+                            navigate('/page-not-found')
+                          }}
+                        >
+                            <div className="flex items-center space-x-2">
+
+                            Applied Scholarships
+                            </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div
+                          className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={()=>{
+                            navigate('/page-not-found')
+                          }}
+                        >
+                          
+                            <div className="flex items-center space-x-2">
+                        
+                            Application History
+                          </div>
+                        </div>
+                      </li>
                     </motion.ul>
                   )}
                 </AnimatePresence>

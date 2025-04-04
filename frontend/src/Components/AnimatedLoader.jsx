@@ -56,7 +56,7 @@ export default function FundEdAnimation() {
         { duration: 2, ease: "linear", repeat: Infinity, delay: 0.8 }
       );
       
-      // Animate the "d" letter
+      // Animate the "D" letter
       animate(
         [
           [".d3", { pathLength: 0.5, pathOffset: 0 }],
@@ -95,149 +95,149 @@ export default function FundEdAnimation() {
         width="300"
         height="100"
         viewBox="0 0 300 100"
-        className="text-black"
+        className="text-[#2D2A2E]" // Updated to dark gray color like in the logo
       >
-        {/* F */}
+        {/* F - Modern sans-serif style */}
         <motion.path
           className="f1"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 20,20 L 20,80 M 20,20 L 50,20 M 20,45 L 45,45"
+          d="M 20,25 L 20,80 M 20,25 L 45,25 M 20,50 L 40,50"
         />
         <motion.path
           className="f2"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 20,20 L 20,80 M 20,20 L 50,20 M 20,45 L 45,45"
+          d="M 20,25 L 20,80 M 20,25 L 45,25 M 20,50 L 40,50"
         />
 
-        {/* u */}
+        {/* u - Modern sans-serif style */}
         <motion.path
           className="u1"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 60,35 L 60,80 M 60,80 C 60,60 90,60 90,80 M 90,35 L 90,80"
+          d="M 55,40 L 55,75 C 55,80 75,80 75,75 L 75,40"
         />
         <motion.path
           className="u2"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 60,35 L 60,80 M 60,80 C 60,60 90,60 90,80 M 90,35 L 90,80"
+          d="M 55,40 L 55,75 C 55,80 75,80 75,75 L 75,40"
         />
 
-        {/* n */}
+        {/* n - Modern sans-serif style */}
         <motion.path
           className="n1"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 100,80 L 100,35 M 100,35 C 100,55 130,55 130,35 M 130,35 L 130,80"
+          d="M 85,80 L 85,40 C 85,35 105,35 105,40 L 105,80"
         />
         <motion.path
           className="n2"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 100,80 L 100,35 M 100,35 C 100,55 130,55 130,35 M 130,35 L 130,80"
+          d="M 85,80 L 85,40 C 85,35 105,35 105,40 L 105,80"
         />
 
-        {/* d */}
+        {/* d - Modern sans-serif style */}
         <motion.path
           className="d1"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 170,20 L 170,80 M 140,80 C 140,60 170,60 170,80"
+          d="M 135,25 L 135,80 M 115,60 C 115,40 135,40 135,55"
         />
         <motion.path
           className="d2"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 170,20 L 170,80 M 140,80 C 140,60 170,60 170,80"
+          d="M 135,25 L 135,80 M 115,60 C 115,40 135,40 135,55"
         />
 
-        {/* E */}
+        {/* E - Bold sans-serif style as in logo */}
         <motion.path
           className="e1"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 180,20 L 180,80 M 180,20 L 210,20 M 180,50 L 205,50 M 180,80 L 210,80"
+          d="M 155,25 L 155,80 M 155,25 L 185,25 M 155,52.5 L 180,52.5 M 155,80 L 185,80"
         />
         <motion.path
           className="e2"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 180,20 L 180,80 M 180,20 L 210,20 M 180,50 L 205,50 M 180,80 L 210,80"
+          d="M 155,25 L 155,80 M 155,25 L 185,25 M 155,52.5 L 180,52.5 M 155,80 L 185,80"
         />
 
-        {/* d */}
+        {/* D - Bold uppercase D as in logo */}
         <motion.path
           className="d3"
           initial={{ pathLength: 0.5, pathOffset: 0.5 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="5"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          d="M 250,20 L 250,80 M 220,80 C 220,60 250,60 250,80"
+          d="M 195,25 L 195,80 M 195,25 C 230,25 230,80 195,80"
         />
         <motion.path
           className="d4"
           initial={{ pathLength: 0, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
+          strokeWidth="5"
+          strokeLinecap="round" 
           strokeLinejoin="round"
           fill="none"
-          d="M 250,20 L 250,80 M 220,80 C 220,60 250,60 250,80"
+          d="M 195,25 L 195,80 M 195,25 C 230,25 230,80 195,80"
         />
 
-        {/* Coin circle */}
+        {/* Optional coin circle */}
         <motion.circle
           className="coin-outer"
-          cx="275"
-          cy="35"
+          cx="260"
+          cy="40"
           r="15"
           initial={{ pathLength: 1.1, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           fill="none"
         />
 
@@ -246,10 +246,10 @@ export default function FundEdAnimation() {
           className="dollar"
           initial={{ pathLength: 1.1, pathOffset: 1 }}
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           fill="none"
-          d="M 275,25 L 275,45 M 270,30 C 270,27 280,27 280,30 C 280,33 270,37 270,40 C 270,43 280,43 280,40"
+          d="M 260,30 L 260,50 M 255,35 C 255,32 265,32 265,35 C 265,38 255,42 255,45 C 255,48 265,48 265,45"
         />
       </svg>
     </div>

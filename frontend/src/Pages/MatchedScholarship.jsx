@@ -3,6 +3,7 @@ import { Search, Bell, ChevronRight, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SideBarComponent } from "../Components/layoutComponents.jsx/SideBarComponent";
+import FundEdAnimation from "../Components/AnimatedLoader";
 
 const ScholarshipFinder = () => {
   const navigate = useNavigate();
@@ -130,12 +131,7 @@ const ScholarshipFinder = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
-        <motion.div
-          initial={{ rotate: 0 }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"
-        ></motion.div>
+        <FundEdAnimation/>
       </div>
     );
   }
