@@ -93,7 +93,7 @@ const Dashboard = () => {
           'Content-Type': 'application/json',
           'Authorization': token
         },
-        body : JSON.stringify({ email })
+        body: JSON.stringify({ email: email })
       })
 
       const userResponse = await activeCampaignDetail.json();
