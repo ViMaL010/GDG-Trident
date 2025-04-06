@@ -1,6 +1,6 @@
 # 🎓 Student Crowdfunding & Scholarship Platform
 
-![Platform Banner](./images/platform-banner.png)
+![Platform Banner](./frontend/public/Logo2.svg)
 
 ## 📌 Table of Contents
 - [📖 Introduction](#-introduction)
@@ -35,38 +35,38 @@ The Student Crowdfunding & Scholarship Platform is an AI-powered solution design
 ## 📊 Screenshots
 
 ### Student Dashboard
-![Student Dashboard](./images/student-dashboard.png)
+![Student Dashboard](./assets/Dashboard.png)
 
 ### Campaign Creation Form
-![Campaign Form](./images/campaign-form.png)
+![Campaign Form](./assets/FormInterface.png)
 
-### Donor Interface
+### Donor Interface (Under Implementation)
 ![Donor Interface](./images/donor-interface.png)
 
 ### Scholarship Matching
-![Scholarship Matching](./images/scholarship-matching.png)
+![Scholarship Matching](./assets/AIMatchedScholarship.png)
 
 ## 📂 Installation & Setup
 
 ### 🔧 Prerequisites
 - Node.js & npm installed
 - Firebase & Razorpay account setup
-- MongoDB database running (if used alongside Firestore)
+- MongoDB database & Firebase
 
 ### 🚀 Setup Instructions
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo.git
-cd your-repo
+git clone https://github.com/your-repo.git](https://github.com/ViMaL010/GDG-Trident.git
+cd GDG-Trident
 
 # Backend Setup
 cd backend
 npm install
-npm start
+node src/server.js
 
 # Frontend Setup
-cd ../frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -82,10 +82,6 @@ FIREBASE_PROJECT_ID=your_project_id
 FIREBASE_STORAGE_BUCKET=your_storage_bucket
 FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
 FIREBASE_APP_ID=your_app_id
-
-# Razorpay Configuration
-RAZORPAY_KEY_ID=your_razorpay_key
-RAZORPAY_KEY_SECRET=your_razorpay_secret
 
 # Database Configuration
 MONGODB_URI=your_mongodb_uri
@@ -111,9 +107,9 @@ JWT_SECRET=your_jwt_secret
 - **Authentication**: Using JWT
 - **File Storage**: Firebase Storage for document and media uploads
 - **AI Processing**: Google Vision for OCR, Gemini Chatbot for interactions, and Google Cloud AI for skill assessments and fraud detection.
-- **Payments**: Razorpay API for secure and efficient transactions
+- **Payments**: Razorpay API for secure and efficient transactions ( Under Implementation )
 
-![Technical Architecture Diagram](./images/technical-architecture.png)
+![Technical Architecture Diagram](./assets/architecture.jpg)
 
 ## 🔒 Security & Compliance
 
@@ -130,10 +126,8 @@ JWT_SECRET=your_jwt_secret
 
 ## 🔗 Useful Links
 
-- 📂 [GitHub Repository](https://github.com/your-repo)
 - 🎥 [Demo Video](https://youtube.com/your-demo)
-- 📝 [Project Documentation](https://your-docs-link.com)
-- 💻 [Live Demo](https://your-live-demo.com)
+- 💻 [Live Demo](https://funded-328fb.web.app)
 
 ## 📜 License
 
