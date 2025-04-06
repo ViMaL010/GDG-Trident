@@ -168,11 +168,11 @@ const LoginComponent = () => {
                   </div>
                   */}
 
-                  <div className="text-center">
+                  {/* <div className="text-center">
                     <a href="#" className="text-xs sm:text-sm text-gray-600 hover:underline">
                       Forgot your password?
                     </a>
-                  </div>
+                  </div> */}
                 </form>
               </>
             )}

@@ -100,7 +100,7 @@ export function Navbar() {
                 >
                   <motion.div 
                     className="text-black text-base font-normal font-['Roboto'] leading-normal cursor-pointer border-b-2 border-transparent hover:border-black"
-                    onClick={() => navigate('/home')}
+                    onClick={() => navigate('/')}
                   >
                     Home
                   </motion.div>

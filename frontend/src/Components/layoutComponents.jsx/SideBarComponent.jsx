@@ -158,7 +158,7 @@ export const SideBarComponent = () => {
 
       {/* Desktop Sidebar - always visible on desktop */}
       {!isMobile && (
-        <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+        <div className="w-64 bg-white border-r border-gray-200 h-full flex flex-col">
           {/* Logo Header */}
           <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <img

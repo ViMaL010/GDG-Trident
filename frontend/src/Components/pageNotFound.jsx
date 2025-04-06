@@ -11,7 +11,7 @@ const NotFoundPage = () => {
         <div className="absolute h-full left-0"></div>
         
         <div className="flex flex-col items-center max-w-md mx-auto text-center p-6">
-          <h1 className="text-5xl font-bold mb-6">404</h1>
+          <h1 className="text-5xl font-bold mb-6">503</h1>
           
           <img src="/under.svg" alt="Under Construction" className='mt-5 max-w-full' />
           

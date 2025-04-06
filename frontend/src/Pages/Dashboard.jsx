@@ -200,50 +200,101 @@ const Dashboard = () => {
   const totalPages = Math.ceil(filteredScholarships.length / scholarshipsPerPage);
 
   // Render pagination controls
-  const renderPagination = () => {
-    if (filteredScholarships.length <= scholarshipsPerPage) return null;
+// Render pagination controls with enhanced animations
+const renderPagination = () => {
+  if (filteredScholarships.length <= scholarshipsPerPage) return null;
 
-    return (
-      <div className="flex justify-center items-center mt-6 space-x-2">
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.5 }}
+      className="flex justify-center items-center mt-6 space-x-2"
+    >
+      <motion.button 
+        whileHover={{ scale: 1.1, backgroundColor: "#f3f4f6" }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        onClick={() => paginate(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+      >
+        <motion.div
+          animate={{ x: currentPage > 1 ? [0, -4, 0] : 0 }}
+          transition={{ repeat: Infinity, repeatDelay: 2, duration: 0.5 }}
         >
           <ChevronLeft className="h-5 w-5" />
-        </motion.button>
+        </motion.div>
+      </motion.button>
 
-        {[...Array(totalPages)].map((_, index) => (
-          <motion.button
-            key={index}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => paginate(index + 1)}
-            className={`
-              px-4 py-2 rounded-md text-sm transition-all
-              ${currentPage === index + 1 
-                ? 'bg-black text-white' 
-                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'}
-            `}
-          >
-            {index + 1}
-          </motion.button>
-        ))}
-
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
+      {[...Array(totalPages)].map((_, index) => (
+        <motion.button
+          key={index}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ 
+            scale: currentPage === index + 1 ? 1.05 : 1, 
+            opacity: 1 
+          }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            delay: 0.1 * index 
+          }}
+          whileHover={{ 
+            scale: 1.1,
+            backgroundColor: currentPage === index + 1 ? "#000" : "#f3f4f6"
+          }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
+          onClick={() => paginate(index + 1)}
+          className={`
+            px-4 py-2 rounded-md text-sm font-medium transition-all duration-300
+            ${currentPage === index + 1 
+              ? 'bg-black text-white shadow-md' 
+              : 'bg-white text-gray-700 border border-gray-200'}
+          `}
+        >
+          {index + 1}
+        </motion.button>
+      ))}
+
+      <motion.button 
+        whileHover={{ scale: 1.1, backgroundColor: "#f3f4f6" }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        onClick={() => paginate(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="p-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+      >
+        <motion.div
+          animate={{ x: currentPage < totalPages ? [0, 4, 0] : 0 }}
+          transition={{ repeat: Infinity, repeatDelay: 2, duration: 0.5 }}
         >
           <ChevronRight className="h-5 w-5" />
-        </motion.button>
-      </div>
-    );
-  };
+        </motion.div>
+      </motion.button>
+      
+      {/* Visual page indicator */}
+      <motion.div 
+        className="hidden md:flex items-center space-x-1 ml-4 text-xs text-gray-500"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <span>Page</span>
+        <motion.span 
+          key={currentPage}
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 10, opacity: 0 }}
+          className="font-bold text-black"
+        >
+          {currentPage}
+        </motion.span>
+        <span>of {totalPages}</span>
+      </motion.div>
+    </motion.div>
+  );
+};
 
   return (
     <div className="flex h-screen w-full bg-gray-50">
@@ -372,7 +423,6 @@ const Dashboard = () => {
             setSearchQuery(e.target.value);
             setCurrentPage(1);
           }}
-          autoFocus
         />
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
       </div>

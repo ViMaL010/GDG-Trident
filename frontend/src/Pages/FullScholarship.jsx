@@ -37,27 +37,33 @@ const TechInnovatorsScholarship = () => {
     }
   }, [id]); // ✅ Depend on ID
 
-  if (!resp) return <div className="flex justify-center items-center h-screen">
-    <FundEdAnimation/>
-  </div>; // ✅ Prevents rendering before data is loaded
+  if (!resp) return (
+    <div className="flex justify-center items-center h-screen">
+      <FundEdAnimation />
+    </div>
+  ); // ✅ Prevents rendering before data is loaded
 
   return (
-    <div className="flex">
+    <div className="flex flex-col md:flex-row">
       <SideBarComponent />
       <div className="flex flex-col w-full border border-gray-300">
-        <div className="flex flex-row">
-          <div className="w-1/2 bg-gray-200 p-4 flex items-center justify-center">
-            <div className="bg-gray-300 flex items-center justify-center rounded">
+        {/* Responsive layout - column on mobile, row on desktop */}
+        <div className="flex flex-col md:flex-row">
+          {/* Image container - full width on mobile, half width on desktop */}
+          <div className="w-full md:w-1/2 bg-gray-200 p-4">
+            <div className="w-full h-64 md:h-full bg-gray-300 rounded overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src="https://media.istockphoto.com/id/1164538944/vector/woman-with-laptop-studying-or-working-concept-table-with-books-lamp-coffee-cup-vector.jpg?s=612x612&w=0&k=20&c=VhUj_AZoUnilUKdRessjsK6JQUjXCfum7RQyuzOr6_0="
+                src="https://www.pixelstalk.net/wp-content/uploads/2016/11/HD-Free-Education-Pictures.jpg"
                 alt="Scholarship"
               />
             </div>
           </div>
-          <div className="w-1/2 p-4">
-            <h1 className="text-2xl font-bold mb-2">{resp.name || "Scholarship Name"}</h1>
-            <p className="text-xl font-bold mb-4">Rs.{resp.amount || "N/A"}</p>
+          
+          {/* Info container - full width on mobile, half width on desktop */}
+          <div className="w-full md:w-1/2 p-4">
+            <h1 className="text-xl md:text-2xl font-bold mb-2">{resp.name || "Scholarship Name"}</h1>
+            <p className="text-lg md:text-xl font-bold mb-4">Rs.{resp.amount || "N/A"}</p>
             <p className="text-sm mb-4">{resp.scholarshipDetail || "No details available."}</p>
             <div className="border border-gray-300 mb-2 p-2 text-center">
               <p className="text-sm">Deadline: {resp.deadline || "April 15, 2025"}</p>

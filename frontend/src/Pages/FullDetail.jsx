@@ -43,6 +43,10 @@ const MultiStepForm = () => {
     universityName: '',
   });
 
+  const [additionalInfo, setAdditionalInfo] = useState({
+    prevAppliedScholarships : ''
+  })
+
   // State for file uploads
   const [uploadedFiles, setUploadedFiles] = useState({
     aadharCard: null,
@@ -131,6 +135,14 @@ const MultiStepForm = () => {
     }));
   };
 
+  const handleAdditionalInfoChange = (e) => {
+    const { name, value } = e.target;
+    setAdditionalInfo(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
   const handleFundraiserInfoChange = (e) => {
     const { name, value } = e.target;
     setFundraiserInfo(prevState => ({
@@ -198,261 +210,245 @@ const MultiStepForm = () => {
   };
 
 
-  function CheckboxForm() {
-    const [formState, setFormState] = useState({
-      allDetailsCorrect: false,
-      agreeToTerms: true
-    });
-  
-    const handleCheckboxChange = (event) => {
-      const { name, checked } = event.target;
-      setFormState({
-        ...formState,
-        [name]: checked
-      });
+// Add this at the component level, with your other state declarations
+const [isFormValid, setIsFormValid] = useState(false);
+
+function CheckboxForm() {
+  const [formState, setFormState] = useState({
+    allDetailsCorrect: false,
+    agreeToTerms: false
+  });
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    const newState = {
+      ...formState,
+      [name]: checked
     };
-  
-    // Custom checkbox styles
-    const checkboxContainerStyle = {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '15px',
-      position: 'relative',
-      cursor: 'pointer'
-    };
-  
-    const checkboxLabelStyle = {
-      marginLeft: '10px',
-      fontFamily: 'Arial, sans-serif'
-    };
-  
-    const checkboxStyle = {
-      appearance: 'none',
-      width: '20px',
-      height: '20px',
-      border: '1px solid #ccc',
-      borderRadius: '3px',
-      outline: 'none',
-      cursor: 'pointer',
-      position: 'relative'
-    };
-  
-    const checkboxCheckedStyle = {
-      backgroundColor: '#000',
-      borderColor: '#000'
-    };
-  
-    const checkmarkStyle = {
-      position: 'absolute',
-      top: '2px',
-      left: '6px',
-      width: '8px',
-      height: '14px',
-      border: 'solid white',
-      borderWidth: '0 2px 2px 0',
-      transform: 'rotate(45deg)',
-      display: 'none'
-    };
-  
-    return (
-      <div className="checkbox-form" style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
-        <div style={checkboxContainerStyle}>
-          <div style={{ position: 'relative' }}>
-            <input
-              type="checkbox"
-              id="allDetailsCorrect"
-              name="allDetailsCorrect"
-              checked={formState.allDetailsCorrect}
-              onChange={handleCheckboxChange}
-              style={{
-                ...checkboxStyle,
-                ...(formState.allDetailsCorrect ? checkboxCheckedStyle : {})
-              }}
-            />
-            <div
-              style={{
-                ...checkmarkStyle,
-                display: formState.allDetailsCorrect ? 'block' : 'none'
-              }}
-            />
-          </div>
-          <label htmlFor="allDetailsCorrect" style={checkboxLabelStyle}>
-            All details are correct.
-          </label>
+    setFormState(newState);
+    
+    // Check if both checkboxes are checked and update parent state
+    setIsFormValid(newState.allDetailsCorrect && newState.agreeToTerms);
+  };
+
+  // Custom checkbox styles
+  const checkboxContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '15px',
+    position: 'relative',
+    cursor: 'pointer'
+  };
+
+  const checkboxLabelStyle = {
+    marginLeft: '10px',
+    fontFamily: 'Arial, sans-serif'
+  };
+
+  const checkboxStyle = {
+    appearance: 'none',
+    width: '20px',
+    height: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '3px',
+    outline: 'none',
+    cursor: 'pointer',
+    position: 'relative'
+  };
+
+  const checkboxCheckedStyle = {
+    backgroundColor: '#000',
+    borderColor: '#000'
+  };
+
+  const checkmarkStyle = {
+    position: 'absolute',
+    top: '2px',
+    left: '6px',
+    width: '8px',
+    height: '14px',
+    border: 'solid white',
+    borderWidth: '0 2px 2px 0',
+    transform: 'rotate(45deg)',
+    display: 'none'
+  };
+
+  return (
+    <div className="checkbox-form" style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
+      <div style={checkboxContainerStyle}>
+        <div style={{ position: 'relative' }}>
+          <input
+            type="checkbox"
+            id="allDetailsCorrect"
+            name="allDetailsCorrect"
+            checked={formState.allDetailsCorrect}
+            onChange={handleCheckboxChange}
+            style={{
+              ...checkboxStyle,
+              ...(formState.allDetailsCorrect ? checkboxCheckedStyle : {})
+            }}
+          />
+          <div
+            style={{
+              ...checkmarkStyle,
+              display: formState.allDetailsCorrect ? 'block' : 'none'
+            }}
+          />
         </div>
-        
-        <div style={checkboxContainerStyle}>
-          <div style={{ position: 'relative' }}>
-            <input
-              type="checkbox"
-              id="agreeToTerms"
-              name="agreeToTerms"
-              checked={formState.agreeToTerms}
-              onChange={handleCheckboxChange}
-              style={{
-                ...checkboxStyle,
-                ...(formState.agreeToTerms ? checkboxCheckedStyle : {})
-              }}
-            />
-            <div
-              style={{
-                ...checkmarkStyle,
-                display: formState.agreeToTerms ? 'block' : 'none'
-              }}
-            />
-          </div>
-          <label htmlFor="agreeToTerms" style={checkboxLabelStyle}>
-            I agree to the terms & conditions.
-          </label>
-        </div>
+        <label htmlFor="allDetailsCorrect" style={checkboxLabelStyle}>
+          All details are correct.
+        </label>
       </div>
-    );
+      
+      <div style={checkboxContainerStyle}>
+        <div style={{ position: 'relative' }}>
+          <input
+            type="checkbox"
+            id="agreeToTerms"
+            name="agreeToTerms"
+            checked={formState.agreeToTerms}
+            onChange={handleCheckboxChange}
+            style={{
+              ...checkboxStyle,
+              ...(formState.agreeToTerms ? checkboxCheckedStyle : {})
+            }}
+          />
+          <div
+            style={{
+              ...checkmarkStyle,
+              display: formState.agreeToTerms ? 'block' : 'none'
+            }}
+          />
+        </div>
+        <label htmlFor="agreeToTerms" style={checkboxLabelStyle}>
+          I agree to the terms & conditions.
+        </label>
+      </div>
+    </div>
+  );
+}
+
+// Your original handleSubmit function with validation check
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  // Return early if form is not valid
+  if (!isFormValid) {
+    return;
   }
+  
+  setIsSubmitting(true);
+  setSubmissionError(null);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmissionError(null);
+  // Rest of your existing handleSubmit function remains unchanged
+  const formData = {
+    personalInfo,
+    academicInfo,
+    financialInfo,
+    fundraiserInfo,
+    bankDetails,
+    uploadedFiles
+  }
+  console.log(formData)
 
+  try {
+    setSubmissionComplete(false);
+    // All your existing code here
+    
+    // ✅ Prepare form data
     const formData = {
       personalInfo,
       academicInfo,
       financialInfo,
       fundraiserInfo,
       bankDetails,
-      uploadedFiles
-    }
-    console.log(formData)
-  
-    try {
-      setSubmissionComplete(false);
-      // ✅ Upload all files to Firebase
-      // const fileUrls = handleUpload(uploadedFiles);
-  
-      // // ✅ Check if any required files are missing
-      // const missingFiles = Object.keys(uploadedFiles).filter(
-      //   (key) => uploadedFiles[key] && !(fileUrls?.[key])
-      // );
-  
-      // if (missingFiles.length > 0) {
-      //   console.log(
-      //     `The following files are missing: ${missingFiles
-      //       .map((file) => file.replace(/([A-Z])/g, ' $1').trim())
-      //       .join(', ')}. Please upload them before submitting.`
-      //   );
-      // }
-  
-      // ✅ Prepare form data
-      const formData = {
-        personalInfo,
-        academicInfo,
-        financialInfo,
-        fundraiserInfo,
-        bankDetails,
-      };
-  
-      console.log('Submitting form data:', formData);
-      // console.log('File URLs:', fileUrls);
-  
-      // ✅ Submit form data to the backend API
-      
-      const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/updateCampaign/uploadUserDetails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization" : sessionStorage.getItem('token')
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      if (!response.ok) {
-        console.log('Failed to submit form');
-      }
-  
-      const result = await response.json();
-      console.log('Submission successful:', result);
-      
+    };
 
-      // ✅ Submission successful
-      setSubmissionComplete(true);
-      if(setSubmissionComplete){
-        navigate('/campaign')
-      }
+    console.log('Submitting form data:', formData);
+    
+    const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/updateCampaign/uploadUserDetails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": sessionStorage.getItem('token')
+      },
+      body: JSON.stringify(formData),
+    });
 
-    } catch (error) {
-      console.error('Form submission failed:', error);
-      setSubmissionError(error.message || 'An error occurred during submission');
-    } finally {
-      setIsSubmitting(false);
+    if (!response.ok) {
+      console.log('Failed to submit form');
     }
-  };
-  
-    const renderFinalStep = () => (
-      <div>
-        <h2 className="text-2xl font-bold text-center mb-2">Review & Submit</h2>
-        <p className="text-center text-gray-600 mb-6">Check your details before submitting.</p>
-        
-        {/* Personal info review */}
-        <FormReviewComponent formData={personalInfo} sections={personalSections} />
-        
-        {/* Academic info review */}
-        <FormReviewComponent formData={academicInfo} sections={academicSection} />
-        
-        {/* Financial info review */}
-        <FormReviewComponent formData={financialInfo} sections={financialSection} />
-        
-        {/* Fundraiser info review */}
-        <FormReviewComponent formData={fundraiserInfo} sections={fundraiserSection} />
-        
-        {/* Bank details review */}
-        <FormReviewComponent formData={bankDetails} sections={bankDetailsSection} />
-        
-        {/* File upload review */}
-        {/* <FileUploadReview files={uploadedFiles} /> */}
-        
-        {/* Upload progress (only shown when uploading) */}
-        {/* <UploadProgressDisplay progress={uploadProgress} uploading={uploading} /> */}
-        
-        {/* Error message */}
-        {/* {(uploadError || submissionError) && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
-            {uploadError || submissionError}
-          </div>
-        )} */}
-        
-        {/* Success message */}
-        {submissionComplete && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-700">
-            Your application has been submitted successfully!
-          </div>
-        )}
-        
-        {/* Checkbox agreement */}
-        <CheckboxForm />
-        
-        {/* Action buttons */}
-        <div className="flex justify-end mt-8 space-x-4">
-          <button
-            type="button"
-            className="px-4 py-2 border border-gray-300"
-            onClick={handleBack}
-            disabled={isSubmitting || ""}
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            className={`px-6 py-2 text-white ${(isSubmitting || "") ? 'bg-gray-500' : 'bg-black'}`}
-            disabled={isSubmitting || ""}
-          >
-            {isSubmitting || "" ? 'Processing...' : 'Submit'}
-          </button>
+
+    const result = await response.json();
+    console.log('Submission successful:', result);
+    
+    setSubmissionComplete(true);
+    if(setSubmissionComplete){
+      navigate('/campaign')
+    }
+
+  } catch (error) {
+    console.error('Form submission failed:', error);
+    setSubmissionError(error.message || 'An error occurred during submission');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+// Modification to your existing renderFinalStep function WITHOUT any new hooks
+const renderFinalStep = () => {
+  return (
+    <div>
+      <h2 className="text-2xl font-bold text-center mb-2">Review & Submit</h2>
+      <p className="text-center text-gray-600 mb-6">Check your details before submitting.</p>
+      
+      {/* Personal info review */}
+      <FormReviewComponent formData={personalInfo} sections={personalSections} />
+      
+      {/* Academic info review */}
+      <FormReviewComponent formData={academicInfo} sections={academicSection} />
+      
+      {/* Financial info review */}
+      <FormReviewComponent formData={financialInfo} sections={financialSection} />
+      
+      {/* Fundraiser info review */}
+      <FormReviewComponent formData={fundraiserInfo} sections={fundraiserSection} />
+      
+      {/* Bank details review */}
+      <FormReviewComponent formData={bankDetails} sections={bankDetailsSection} />
+      
+      {/* Success message */}
+      {submissionComplete && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-700">
+          Your application has been submitted successfully!
         </div>
+      )}
+      
+      {/* Checkbox agreement */}
+      <CheckboxForm />
+      
+      {/* Action buttons */}
+      <div className="flex justify-end mt-8 space-x-4">
+        <button
+          type="button"
+          className="px-4 py-2 border border-gray-300"
+          onClick={handleBack}
+          disabled={isSubmitting || ""}
+        >
+          Back
+        </button>
+        <button
+          type="submit"
+          className={`px-6 py-2 text-white ${(isSubmitting || !isFormValid) ? 'bg-gray-500' : 'bg-black'}`}
+          disabled={isSubmitting || !isFormValid}
+          onClick={handleSubmit}
+        >
+          {isSubmitting || "" ? 'Processing...' : 'Submit'}
+        </button>
       </div>
-    );
-
-
+    </div>
+  );
+};
  
 
   const personalSections = [
@@ -499,8 +495,8 @@ const MultiStepForm = () => {
       fields : [
         {label : 'Fundraiser Title', key : 'fundraiserTitle'},
         {label : 'Why Do You Need Funds?', key : 'fundraiserReason'},
-        {label : 'Fundraiser Goal (Amount in ₹)', key : 'fundraiserGoal'},
-        {label : 'How Will The Funds Be Used', key : 'fundraiserUsage'},
+        {label : 'Fundraiser Goal (Amount in ₹)', key : 'fundraisingGoal'},
+        {label : 'How Will The Funds Be Used', key : 'fundsUsage'},
       ]
     }
   ]
@@ -916,13 +912,14 @@ const MultiStepForm = () => {
 
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">
-                Scholarships Previously Applied For (if any) <span className="text-red-500">*</span>
+                Scholarships Previously Applied For (if any) 
               </label>
               <input
                 type="text"
                 name="guardianName"
                 placeholder="Enter your parent or guardian's name"
-                value={financialInfo.guardianName}
+                value={additionalInfo.prevAppliedScholarships}
+                onChange={handleAdditionalInfoChange}
                 // onChange={financialInfoChange}
                 className="w-full p-2 border border-gray-300 focus:outline-none"
               />
@@ -1127,11 +1124,17 @@ const MultiStepForm = () => {
                   name="ifscCode"
                   placeholder="XXXXXXXX"
                   value={bankDetails.ifscCode}
-                  onChange={handleBankDetailsChange}
+                  onChange={(e) => {
+                    const regex = /^[a-zA-Z0-9]*$/; // allows only letters and numbers
+                    if (regex.test(e.target.value)) {
+                      handleBankDetailsChange(e);
+                    }
+                  }}
                   className="w-full p-2 border border-gray-300 focus:outline-none"
-                  required = {true}
+                  required={true}
                 />
               </div>
+
         
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">
@@ -1148,30 +1151,16 @@ const MultiStepForm = () => {
               </div>
         
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">
-                  Bank Passbook/Cancelled Cheque Upload
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
+                  <FileInput
+                    title="Bank Passbook/Cancelled Cheque Upload"
+                    placeholder="Upload a scanned copy"
                     name="passbook"
-                    id="passbook"
+                    value={bankDetails.passbook}
                     onChange={handleFileUpload}
-                    className="hidden"
+                    required={true}
                   />
-                  <label
-                    htmlFor="passbook"
-                    className="flex items-center justify-between w-full p-2 border border-gray-300 focus:outline-none cursor-pointer"
-                  >
-                    <span className="text-gray-500">
-                      {bankDetails.passbook ? bankDetails.passbook.name : "Upload a scanned copy"}
-                    </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
-                    </svg>
-                  </label>
                 </div>
-              </div>
+
         
               <div className="flex justify-end mt-8 space-x-4">
                 <button

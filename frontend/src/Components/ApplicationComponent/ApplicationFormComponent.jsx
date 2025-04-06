@@ -60,9 +60,9 @@ export const ApplicationFormComponent = () => {
     
           setAiScore(data.ai_score.toFixed(2)); // Round to 2 decimal places
           setSuccessMessage('Score calculated successfully!')
-          console.log(aiScore);
+          console.log(data.ai_score);
           console.log(successMessage);
-          return true; // Return true to indicate success
+          return data.ai_score; // Return the actual score value instead of just true
         } catch (err) {
           setError(err.message || 'Network error, please try again');
           console.error(err);
@@ -102,13 +102,20 @@ export const ApplicationFormComponent = () => {
             }
 
             // For skill-based category, calculate AI score and only proceed if successful
-            if (formData.category === 'Skill-Based') {
-                const scoreSuccess = await fetchAiScore();
-                if (!scoreSuccess) {
-                    setSubmitStatus({ success: false, message: 'Failed to calculate AI score. Please check your inputs and try again.' });
-                    return; // Stop further processing
-                }
-            }
+            // if (formData.category === 'Skill-Based') {
+            //     const scoreResult = await fetchAiScore();
+            //     if (scoreResult === false) {
+            //         setSubmitStatus({ success: false, message: 'Failed to calculate AI score. Please check your inputs and try again.' });
+            //         setIsSubmitting(false);
+            //         return; // Stop further processing
+            //     }
+                
+            //     // Update the AIScore in formData
+            //     setFormData(prevData => ({
+            //         ...prevData,
+            //         AIScore: scoreResult
+            //     }));
+            // }
 
             const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/scholarships/match', {
                 method: 'POST',
@@ -116,7 +123,10 @@ export const ApplicationFormComponent = () => {
                     'Content-Type': 'application/json',
                     'Authorization' : sessionStorage.getItem('token')
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    AIScore: formData.category === 'Skill-Based' ? aiScore : ''
+                })
             });
 
             if (!response.ok) {
@@ -140,7 +150,7 @@ export const ApplicationFormComponent = () => {
     const renderLoader = () => {
         if (!loading) return null;
         
-        return <FundEdAnimation/>; // Added return statement
+        return <FundEdAnimation />;
     };
 
     return (
