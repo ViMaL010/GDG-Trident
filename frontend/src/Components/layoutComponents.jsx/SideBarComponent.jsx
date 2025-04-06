@@ -70,7 +70,7 @@ export const SideBarComponent = () => {
   const handleMyCampaign = async () => {
     setLoading(prev => ({ ...prev, myCampaign: true }));
     try {
-      const response = await fetch("https://gdg-backend-7gpy.onrender.com/api/updateCampaign/check", {
+      const response = await fetch("http://localhost:5000/api/updateCampaign/check", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

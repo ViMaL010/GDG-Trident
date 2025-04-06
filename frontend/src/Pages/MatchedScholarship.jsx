@@ -205,7 +205,7 @@ const ScholarshipFinder = () => {
             <div className="text-lg font-medium">Scholarships</div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block">
+            {/* <div className="relative hidden sm:block">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <motion.input
                 whileFocus={{ width: "16rem", transition: { duration: 0.3 } }}
@@ -213,7 +213,7 @@ const ScholarshipFinder = () => {
                 placeholder="Search"
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-48 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
               />
-            </div>
+            </div> */}
             <motion.div 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }}

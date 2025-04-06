@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import LayoutComponent from "../Components/layoutComponents.jsx/LayoutComponent";
 import { SideBarComponent } from "../Components/layoutComponents.jsx/SideBarComponent";
 import { useParams } from "react-router-dom";
+import FundEdAnimation from "../Components/AnimatedLoader";
 
 const TechInnovatorsScholarship = () => {
   const [resp, setResponse] = useState(null); // Initially null to differentiate between loading and empty state
@@ -36,7 +37,9 @@ const TechInnovatorsScholarship = () => {
     }
   }, [id]); // ✅ Depend on ID
 
-  if (!resp) return <p>Loading...</p>; // ✅ Prevents rendering before data is loaded
+  if (!resp) return <div className="flex justify-center items-center h-screen">
+    <FundEdAnimation/>
+  </div>; // ✅ Prevents rendering before data is loaded
 
   return (
     <div className="flex">

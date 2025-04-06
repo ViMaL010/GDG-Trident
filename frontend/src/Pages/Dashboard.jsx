@@ -137,7 +137,10 @@ const Dashboard = () => {
         body: JSON.stringify({ email: email })
       });
 
+
       const userResponse = await activeCampaignDetail.json();
+
+      // console.log(userResponse.response); // Log the user response for debugging
 
       const response = await fetch(`${API_BASE_URL}/scholarships/getAllScholarships`, {
         method: 'POST',
@@ -154,8 +157,8 @@ const Dashboard = () => {
         setCurrentPage(1); // Reset to first page when new data is fetched
         
         // Set active campaign from user response if available
-        if (userResponse && userResponse.campaign) {
-          setActiveCampaign(userResponse.campaign);
+        if (userResponse && userResponse.response) {
+          setActiveCampaign(userResponse.response);
         }
       } else {
         setError(data.message || 'Failed to fetch scholarships');
@@ -173,6 +176,8 @@ const Dashboard = () => {
       fetchScholarships();
     }
   }, [location.pathname, fetchScholarships]);
+
+  // console.log(activeCampaign.fundraiserInfo); // Log the active campaign title for debugging
 
   // Filter scholarships based on search query
   const filteredScholarships = scholarships.filter(scholarship => 
@@ -280,57 +285,100 @@ const Dashboard = () => {
       <div className="flex-1 overflow-y-auto">
         {/* Top Navigation */}
         <div className="bg-white p-4 border-b border-gray-200 flex justify-between items-center">
-          {/* Menu button for mobile */}
-          <div className="flex items-center">
-            {isMobile && (
-              <motion.button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="mr-3 text-gray-600"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </motion.button>
-            )}
-            <span className="font-bold">Dashboard</span>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <motion.input
-                whileFocus={{ width: "16rem", transition: { duration: 0.3 } }}
-                type="text"
-                placeholder="Search scholarships"
-                className="pl-8 pr-4 py-1 border border-gray-200 rounded text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1); // Reset to first page on new search
-                }}
-              />
-              <Search className="absolute left-2 top-1.5 h-4 w-4 text-gray-400" />
-            </div>
-            <motion.div 
-              whileHover={{ scale: 1.1 }} 
-              whileTap={{ scale: 0.9 }}
-            >
-              <Bell className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-800 transition-colors duration-300" />
-            </motion.div>
-          </div>
-        </div>
+  {/* Menu button for mobile */}
+  <div className="flex items-center">
+    {isMobile && (
+      <motion.button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="mr-3 text-gray-600"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </motion.button>
+    )}
+    <span className="font-bold">Dashboard</span>
+  </div>
+  
+  {/* Desktop search and notifications */}
+  <div className="flex items-center space-x-4">
+    {/* Full search bar on desktop, icon only on mobile */}
+    <div className={`relative ${isMobile ? 'hidden' : 'block'}`}>
+      <motion.input
+        whileFocus={{ width: "16rem", transition: { duration: 0.3 } }}
+        type="text"
+        placeholder="Search scholarships"
+        className="pl-8 pr-4 py-1 border border-gray-200 rounded text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+        value={searchQuery}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+          setCurrentPage(1); // Reset to first page on new search
+        }}
+      />
+      <Search className="absolute left-2 top-1.5 h-4 w-4 text-gray-400" />
+    </div>
+
+    {/* Search button on mobile */}
+    {isMobile && (
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+        className="p-2 text-gray-500"
+      >
+        <Search className="h-5 w-5" />
+      </motion.button>
+    )}
+
+    <motion.div 
+      whileHover={{ scale: 1.1 }} 
+      whileTap={{ scale: 0.9 }}
+    >
+      <Bell className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-800 transition-colors duration-300" />
+    </motion.div>
+  </div>
+</div>
+
+{/* Mobile search bar - expandable/collapsible */}
+<AnimatePresence>
+  {isMobile && (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="w-full bg-white px-4 py-3 border-b border-gray-200"
+    >
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search scholarships"
+          className="w-full pl-8 pr-4 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+          autoFocus
+        />
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
         
         <motion.div 
           initial="hidden"
@@ -382,20 +430,20 @@ const Dashboard = () => {
                 {/* Campaign Details */}
                 <div className="flex-1">
                   <span className="text-xs font-medium text-green-500 bg-green-50 px-2 py-1 rounded">ACTIVE</span>
-                  <h2 className="text-lg font-bold mt-1">{activeCampaign.name}</h2>
+                  <h2 className="text-lg font-bold mt-1">{activeCampaign.fundraiserInfo.fundraiserTitle}</h2>
 
                   {/* Funding Details */}
                   <div className="flex items-center mt-2 text-sm">
-                    <span className="text-gray-500">Goal: $10,000</span>
+                    <span className="text-gray-500">Goal: ₹{activeCampaign.fundraiserInfo.fundraisingGoal}</span>
                     <span className="mx-2 text-gray-300">|</span>
-                    <span className="text-green-600">$3,464 (34%)</span>
+                    <span className="text-green-600">₹100000 (100%)</span>
                   </div>
 
                   {/* Progress bar with hover effect */}
                   <div className="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden group">
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: '34%' }}
+                      animate={{ width: '100%' }}
                       transition={{ duration: 1, ease: "easeOut" }}
                       className="bg-green-600 h-2 rounded-full transition-all duration-700 group-hover:bg-green-500" 
                     />
@@ -403,8 +451,7 @@ const Dashboard = () => {
 
                   {/* Campaign Description */}
                   <p className="text-sm text-gray-500 mt-3 max-w-lg">
-                    Alex is struggling to pay tuition needed to finish their degree in computer science.
-                    Your contribution can make a difference for their future. Help them reach their goal!
+                    {activeCampaign.fundraiserInfo.fundraiserReason}
                   </p>
 
                   {/* Manage Button with hover effect */}
@@ -412,6 +459,9 @@ const Dashboard = () => {
                     whileHover={{ y: -4, boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)" }}
                     whileTap={{ scale: 0.95 }}
                     className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md transition-all duration-300"
+                    onClick={()=>{
+                      navigate('/campaign')
+                    }}
                   >
                     Manage Campaign
                   </motion.button>
