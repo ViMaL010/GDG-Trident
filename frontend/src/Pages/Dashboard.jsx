@@ -458,7 +458,7 @@ const Dashboard = () => {
                   <motion.button 
                     whileHover={{ y: -4, boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)" }}
                     whileTap={{ scale: 0.95 }}
-                    className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md transition-all duration-300"
+                    className="mt-4 px-5 py-2 bg-black text-white text-sm rounded-md transition-all duration-300 cursor-pointer"
                     onClick={()=>{
                       navigate('/campaign')
                     }}

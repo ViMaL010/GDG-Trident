@@ -5,6 +5,9 @@ import { FileUploadReview, UploadProgressDisplay, useFileUploadManager } from ".
 import FileUpload from "../Components/FileUploadComponent";
 import { uploadAllFiles } from "../Components/UploadComponent";
 import { useNavigate } from "react-router-dom";
+import { SideBarComponent } from "../Components/layoutComponents.jsx/SideBarComponent";
+import InstructionsComponent from "../Components/InstructionsComponent";
+import { CampaignSideBar } from "../Components/layoutComponents.jsx/campaignSidebar";
 
 // File Input Component
 
@@ -15,6 +18,13 @@ const MultiStepForm = () => {
   const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(1);
+
+  
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const toggleInstructions = () => {
+    setShowInstructions(prev => !prev);
+  };
 
   // State for Personal Information form
   const [personalInfo, setPersonalInfo] = useState({
@@ -509,10 +519,30 @@ const MultiStepForm = () => {
   ]
 
 
-  return (
-    <div className="max-w-3xl mx-auto p-6">
-      {/* Steps indicator */}
-      <div className="flex justify-center mb-8">
+  return (   <div className="flex flex-col md:flex-row bg-white min-h-screen">
+      <CampaignSideBar />
+      
+      {/* Main content container - adjusted max-width */}
+      <div className="flex-1 md:ml-64 p-6">
+      <div className="max-w-4xl mx-auto">
+          {/* Instructions toggle button */}
+          <div className="flex justify-end mb-4">
+            <button 
+              onClick={toggleInstructions}
+              className="flex items-center px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded"
+            >
+              {showInstructions ? 'Back to Form' : 'Show Instructions'}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
+          
+          {/* Conditional rendering - either instructions or form content */}
+          {showInstructions ? (
+            <InstructionsComponent />
+          ) : <>
+                <div className="flex justify-center mb-8">
         {[1, 2, 3, 4, 5, 6, 7].map((step) => (
           <div key={step} className="flex items-center">
             <div className={`rounded-full w-6 h-6 flex items-center justify-center text-xs 
@@ -1166,7 +1196,12 @@ const MultiStepForm = () => {
       <form onSubmit={handleSubmit} >
       {currentStep == 7 && renderFinalStep()}
       </form>
-      
+      </>}
+      {/* Steps indicator */}
+
+    </div>
+
+    </div>
     </div>
   );
 };

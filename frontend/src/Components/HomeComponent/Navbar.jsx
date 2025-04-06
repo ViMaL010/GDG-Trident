@@ -83,7 +83,7 @@ export function Navbar() {
               variants={logoVariants}
               whileHover="hover"
             >
-              <img src="/Logo.png" className="h-8" alt="Logo" />
+              <img src="/Logo.svg" className="h-8" alt="Logo" />
             </motion.div>
             
             <div className="justify-center items-center gap-4 md:gap-8 flex">

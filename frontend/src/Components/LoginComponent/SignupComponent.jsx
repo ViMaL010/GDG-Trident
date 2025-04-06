@@ -71,7 +71,7 @@ const SignupForm = () => {
       {/* Responsive Header */}
       <header className="w-full p-3 sm:p-4 md:px-8 flex justify-between items-center border-b">
         <img 
-          src="/Logo.png" 
+          src="/Logo.svg" 
           className="h-5 sm:h-6 cursor-pointer" 
           alt="Logo" 
           onClick={() => navigate('/')}

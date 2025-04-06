@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Share, Edit, X } from 'lucide-react';
 import { SideBarComponent } from '../Components/layoutComponents.jsx/SideBarComponent';
+import { useLocation } from 'react-router-dom'; // Add this import
 
 const MainCampaignPage = () => {
   const [expandedSection, setExpandedSection] = useState('updates');
   const [campaignDetails, setCampaignDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation(); // Get current location
   
   const email = sessionStorage.getItem("email");
 
@@ -21,7 +23,7 @@ const MainCampaignPage = () => {
   const handleMyCampaignDetails = async() => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/updateCampaign/check", {
+      const response = await fetch("https://gdg-backend-7gpy.onrender.com/api/updateCampaign/check", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,9 +46,12 @@ const MainCampaignPage = () => {
     }
   };
 
+  // Modified useEffect that runs when location changes
   useEffect(() => {
     handleMyCampaignDetails();
-  }, []); 
+    // The dependency on location.pathname will cause this effect to run
+    // whenever the route/navigation changes
+  }, [location.pathname]); 
 
   console.log(campaignDetails);
 

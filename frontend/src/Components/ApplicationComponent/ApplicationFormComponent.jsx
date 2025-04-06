@@ -61,10 +61,12 @@ export const ApplicationFormComponent = () => {
           setAiScore(data.ai_score.toFixed(2)); // Round to 2 decimal places
           setSuccessMessage('Score calculated successfully!')
           console.log(aiScore);
-          console.log(successMessage)
+          console.log(successMessage);
+          return true; // Return true to indicate success
         } catch (err) {
           setError(err.message || 'Network error, please try again');
           console.error(err);
+          return false; // Return false to indicate failure
         } finally {
           setLoading(false);
         }
@@ -99,7 +101,14 @@ export const ApplicationFormComponent = () => {
                 throw new Error(`API responded with status: ${studentDetail.status}`);
             }
 
-            fetchAiScore();
+            // For skill-based category, calculate AI score and only proceed if successful
+            if (formData.category === 'Skill-Based') {
+                const scoreSuccess = await fetchAiScore();
+                if (!scoreSuccess) {
+                    setSubmitStatus({ success: false, message: 'Failed to calculate AI score. Please check your inputs and try again.' });
+                    return; // Stop further processing
+                }
+            }
 
             const response = await fetch('https://gdg-backend-7gpy.onrender.com/api/scholarships/match', {
                 method: 'POST',
@@ -121,7 +130,7 @@ export const ApplicationFormComponent = () => {
                 navigate('/submission');
             }, 1500);
         } catch (error) {
-            setSubmitStatus({ success: false, message: `No eligible scholarships found` });
+            setSubmitStatus({ success: false, message: `Error: ${error.message || 'No eligible scholarships found'}` });
             console.error('Submission error:', error);
         } finally {
             setIsSubmitting(false);
@@ -131,7 +140,7 @@ export const ApplicationFormComponent = () => {
     const renderLoader = () => {
         if (!loading) return null;
         
-        <FundEdAnimation/>
+        return <FundEdAnimation/>; // Added return statement
     };
 
     return (
@@ -372,8 +381,8 @@ export const ApplicationFormComponent = () => {
                         )}
                         
                         {/* Submission Status */}
-                        {submitStatus && !submitStatus.success && (
-                            <div className="bg-red-100 text-red-800 p-3 rounded text-sm">
+                        {submitStatus && (
+                            <div className={`${submitStatus.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} p-3 rounded text-sm`}>
                                 {submitStatus.message}
                             </div>
                         )}

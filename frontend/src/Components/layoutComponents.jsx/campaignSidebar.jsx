@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const SideBarComponent = () => {
+export const CampaignSideBar = () => {
   const navigate = useNavigate();
   const [scholarshipsOpen, setScholarshipsOpen] = useState(true);
   const [campaignsOpen, setCampaignsOpen] = useState(true);
@@ -158,7 +158,7 @@ export const SideBarComponent = () => {
 
       {/* Desktop Sidebar - always visible on desktop */}
       {!isMobile && (
-        <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+        <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-md z-10 overflow-y-auto border-r border-gray-200 flex flex-col ">
           {/* Logo Header */}
           <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <img
